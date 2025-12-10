@@ -1,0 +1,61 @@
+{
+  "name": "xe-bot-mcp",
+  "version": "1.0.0",
+  "description": "MCP Server for Xe-Bot Research Paper Animation Generator",
+  "author": "Xe-Bot",
+  "license": "MIT",
+  "main": "mcp_server.py",
+  "tools": [
+    {
+      "name": "search_arxiv",
+      "description": "Search arXiv for research papers by query or topic"
+    },
+    {
+      "name": "generate_animation",
+      "description": "Generate an animated video explanation for a research paper from arXiv"
+    },
+    {
+      "name": "get_paper_info",
+      "description": "Get information about a specific arXiv paper"
+    },
+    {
+      "name": "list_animations",
+      "description": "List all generated animations"
+    },
+    {
+      "name": "get_animation_code",
+      "description": "Get the Manim code for a specific animation"
+    }
+  ],
+  "configuration": {
+    "required": [
+      {
+        "name": "OPENROUTER_API_KEY",
+        "description": "OpenRouter API key for LLM access",
+        "type": "string"
+      }
+    ],
+    "optional": [
+      {
+        "name": "DATABASE_URL",
+        "description": "PostgreSQL database URL (optional)",
+        "type": "string"
+      },
+      {
+        "name": "VIDEO_BASE_URL",
+        "description": "Base URL for video access",
+        "type": "string",
+        "default": "http://localhost:8000"
+      }
+    ]
+  },
+  "installation": {
+    "command": "pip install -r requirements.txt",
+    "dependencies": [
+      "mcp",
+      "manim",
+      "arxiv",
+      "httpx"
+    ]
+  }
+}

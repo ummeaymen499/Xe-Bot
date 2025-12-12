@@ -104,8 +104,9 @@ function App() {
         download_url: v.download_url,
         file_path: '',
         file_size: 0,
-        animation_type: v.type || 'segment',
-        paper_title: finalStatus.paper?.title
+        animation_type: v.type === 'full' ? 'Full Introduction' : (v.type || 'segment'),
+        paper_title: finalStatus.paper?.title,
+        paper_arxiv_id: finalStatus.paper?.arxiv_id
       })));
       
       setState('completed');

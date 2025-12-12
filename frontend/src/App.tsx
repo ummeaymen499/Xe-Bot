@@ -134,17 +134,20 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen relative">
-      {/* Background */}
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Background Orbs */}
+      <div className="orb orb-1" />
+      <div className="orb orb-2" />
+      <div className="orb orb-3" />
+
+      {/* Background Grid */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-dark-950 via-dark-900 to-primary-950" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
       </div>
 
       <Header onNavigate={handleNavigate} currentPage={state === 'gallery' ? 'gallery' : 'home'} />
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-8 relative z-10">
         <AnimatePresence mode="wait">
           {/* Gallery */}
           {state === 'gallery' && <VideoGallery onBack={handleReset} />}
@@ -161,13 +164,26 @@ function App() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-10"
+                className="mb-12"
               >
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                  <span className="gradient-text">Research to Animation</span>
+                {/* Animated Badge */}
+                <motion.div 
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/30 text-primary-300 text-sm mb-6"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  AI-Powered Research Animations
+                </motion.div>
+
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                  <span className="gradient-text-hero">Research to</span>
+                  <br />
+                  <span className="text-white">Animation</span>
                 </h1>
-                <p className="text-dark-300 max-w-lg mx-auto">
-                  Transform academic papers into visual explanations with AI
+                <p className="text-dark-300 max-w-xl mx-auto text-lg">
+                  Transform complex academic papers into stunning visual explanations with the power of AI ✨
                 </p>
               </motion.div>
 
@@ -175,7 +191,7 @@ function App() {
 
               <motion.button
                 onClick={() => setState('gallery')}
-                className="mt-8 px-5 py-2.5 glass-hover rounded-lg text-dark-400 hover:text-white flex items-center gap-2 mx-auto text-sm"
+                className="mt-10 px-6 py-3 glass-hover rounded-xl text-dark-400 hover:text-white flex items-center gap-2 mx-auto group"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}

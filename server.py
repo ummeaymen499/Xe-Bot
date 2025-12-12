@@ -451,8 +451,14 @@ async def list_videos():
 async def list_videos_enriched():
     """List all videos with paper information from database"""
     try:
-        # Get videos from filesystem
+        # Get videos from filesystem FIRST - these are the actual existing files
         fs_videos = url_manager.get_all_videos()
+        
+        # Create a map of filesystem videos by path for quick lookup
+        fs_video_map = {}
+        for fv in fs_videos:
+            if fv.get("file_path"):
+                fs_video_map[fv["file_path"]] = fv
         
         # Get videos from database
         session = db_manager.get_session()
@@ -460,49 +466,46 @@ async def list_videos_enriched():
         
         # Build enriched video list
         enriched_videos = []
+        used_fs_paths = set()
         
-        # First add database videos
+        # First add database videos ONLY if they exist on filesystem
         for anim in db_animations:
-            video_info = {
-                "video_id": f"db_{anim.id}",
-                "animation_type": anim.animation_type,
-                "status": anim.status.value if anim.status else "unknown",
-                "created_at": anim.created_at.isoformat() if anim.created_at else None,
-                "duration_seconds": anim.duration_seconds,
-                "file_size": anim.file_size_bytes,
-            }
-            
-            # Get paper info
-            if anim.paper:
-                video_info["paper_id"] = anim.paper.id
-                video_info["paper_title"] = anim.paper.title
-                video_info["paper_arxiv_id"] = anim.paper.arxiv_id
-            
-            # Get URLs
+            # Check if this database entry has a valid file on disk
             if anim.file_path and Path(anim.file_path).exists():
+                video_info = {
+                    "video_id": f"db_{anim.id}",
+                    "animation_type": anim.animation_type,
+                    "status": anim.status.value if anim.status else "unknown",
+                    "created_at": anim.created_at.isoformat() if anim.created_at else None,
+                    "duration_seconds": anim.duration_seconds,
+                    "file_size": anim.file_size_bytes,
+                }
+                
+                # Get paper info
+                if anim.paper:
+                    video_info["paper_id"] = anim.paper.id
+                    video_info["paper_title"] = anim.paper.title
+                    video_info["paper_arxiv_id"] = anim.paper.arxiv_id
+                
                 url_info = url_manager.generate_video_url(anim.file_path)
                 video_info["video_url"] = url_info.get("video_url")
                 video_info["download_url"] = url_info.get("download_url")
                 video_info["file_path"] = anim.file_path
-            elif anim.video_url:
-                video_info["video_url"] = anim.video_url
-                video_info["download_url"] = anim.download_url
-            
-            if video_info.get("video_url"):
+                
                 enriched_videos.append(video_info)
+                used_fs_paths.add(anim.file_path)
         
-        # Add filesystem videos not in database
-        db_paths = {a.file_path for a in db_animations if a.file_path}
+        # Add filesystem videos not linked to database
         for fs_video in fs_videos:
-            if fs_video.get("file_path") not in db_paths:
+            fp = fs_video.get("file_path", "")
+            if fp not in used_fs_paths:
                 fs_video["source"] = "filesystem"
                 # Try to extract info from path
-                path = fs_video.get("file_path", "")
-                if "segment_" in path:
+                if "segment_" in fp:
                     import re
-                    match = re.search(r'segment_(\d+)', path)
+                    match = re.search(r'segment_(\d+)', fp)
                     fs_video["animation_type"] = f"Segment {match.group(1)}" if match else "Segment"
-                elif "full_introduction" in path:
+                elif "full_introduction" in fp:
                     fs_video["animation_type"] = "Full Introduction"
                 else:
                     fs_video["animation_type"] = "Animation"

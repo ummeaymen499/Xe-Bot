@@ -76,13 +76,19 @@ class OpenRouterClient:
             payload["response_format"] = {"type": "json_object"}
         
         async with httpx.AsyncClient(timeout=120.0) as client:
-            response = await client.post(
-                f"{self.base_url}/chat/completions",
-                headers=self.headers,
-                json=payload
-            )
-            response.raise_for_status()
-            data = response.json()
+            try:
+                response = await client.post(
+                    f"{self.base_url}/chat/completions",
+                    headers=self.headers,
+                    json=payload
+                )
+                response.raise_for_status()
+                data = response.json()
+            except httpx.HTTPStatusError as e:
+                console.print(f"[red]OpenRouter API Error: {e.response.status_code}[/red]")
+                console.print(f"[red]Response: {e.response.text}[/red]")
+                console.print(f"[yellow]API Key (first 20 chars): {self.api_key[:20]}...[/yellow]")
+                raise
         
         return LLMResponse(
             content=data["choices"][0]["message"]["content"],

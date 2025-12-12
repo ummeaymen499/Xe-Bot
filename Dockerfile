@@ -5,18 +5,29 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies for Manim
+# Install system dependencies for Manim and build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    # Build tools for pycairo/manimpango
+    gcc \
+    g++ \
+    pkg-config \
+    # Manim dependencies
     ffmpeg \
     libcairo2-dev \
     libpango1.0-dev \
+    libgirepository1.0-dev \
+    # TeX for mathematical expressions
     texlive \
     texlive-latex-extra \
     texlive-fonts-recommended \
     texlive-science \
+    # Utilities
     curl \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
+
+# Upgrade pip
+RUN pip install --upgrade pip
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .

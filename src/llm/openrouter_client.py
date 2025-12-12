@@ -132,43 +132,90 @@ Rules:
     
     async def segment_introduction(self, introduction: str) -> List[Dict[str, Any]]:
         """
-        Segment the introduction into logical parts with topic classification
+        Segment the introduction into logical parts with deep concept understanding
         
         Args:
             introduction: The introduction text
         
         Returns:
-            List of segments with topic labels and key concepts (3-5 segments)
+            List of segments with conceptual understanding and visual metaphors (3-5 segments)
         """
         messages = [
             {
                 "role": "system",
-                "content": """You are an expert at analyzing and segmenting academic text.
-Your task is to break down a research paper introduction into logical segments.
+                "content": """You are an expert at UNDERSTANDING and VISUALIZING research concepts.
+Your task is to deeply understand a research paper and extract the CORE IDEAS that can be ANIMATED.
+
+=== YOUR MISSION ===
+Don't just extract text - UNDERSTAND the concepts and think about how to VISUALIZE them.
+Imagine you're a 3Blue1Brown animator trying to explain this paper through visual metaphors.
 
 === CRITICAL REQUIREMENT ===
-You MUST create between 3 and 5 segments (inclusive). No fewer than 3, no more than 5.
-Keep it concise - combine related concepts to stay within 5 segments.
+Create 3-5 segments. Each segment should represent a CORE IDEA that can be animated visually.
 
-Suggested segment structure:
-1. Background/Context (what field/area this is about)
-2. Problem Statement (what problem exists and why it matters)
-3. Proposed Approach (what this paper does)
-4. Key Contributions (main contributions/innovations)
-5. Summary/Outline (optional - brief overview)
+=== FOR EACH SEGMENT, THINK DEEPLY ===
 
-For each segment, provide:
-1. content: The actual text of the segment (keep it brief - 2-3 sentences max)
-2. topic: A short descriptive title for the segment (2-4 words)
-3. topic_category: One of [background, problem_statement, motivation, related_work, approach, contributions, outline]
-4. key_concepts: List of 2-3 key terms/concepts mentioned
-5. animation_hints: Brief suggestion for visualization (1 sentence)
+1. **CONCEPT UNDERSTANDING**: What is the core idea? Not the words, but the MEANING.
+   - Is it about combining things? (show merging/fusion)
+   - Is it about transformation? (show morphing)
+   - Is it about flow/process? (show particles moving through stages)
+   - Is it about comparison? (show side-by-side with differences highlighted)
+   - Is it about structure? (show hierarchical/network layouts)
+   - Is it about growth/improvement? (show expansion, bars rising)
+   - Is it about breaking/fixing? (show degradation then repair)
 
-Return a JSON object with a "segments" array containing 3-5 segments in order."""
+2. **VISUAL METAPHOR**: What real-world phenomenon represents this concept?
+   - Neural networks → brain with firing neurons
+   - Optimization → climbing a mountain, finding lowest valley
+   - Data flow → water/particles streaming through pipes
+   - Classification → sorting objects into buckets
+   - Attention mechanism → spotlight focusing on parts
+   - Encryption → lock and key, scrambled puzzle
+   - Compression → squeezing large object into small space
+   - Training → repeated cycles of adjustment, tuning dials
+   - Inference → input goes in, output comes out through black box
+   - Ensemble → multiple experts voting together
+
+3. **ANIMATION APPROACH**: How should this concept be shown in motion?
+   - What STARTS the animation? (initial state)
+   - What TRANSFORMS? (the action/process)
+   - What is the RESULT? (final state)
+
+=== OUTPUT FORMAT ===
+For each segment provide:
+1. concept_summary: The CORE IDEA in 1-2 sentences (what the reader should UNDERSTAND)
+2. visual_metaphor: A concrete visual representation (e.g., "particles flowing through a funnel")
+3. topic: Short title (2-4 words)
+4. topic_category: One of [background, problem_statement, motivation, related_work, approach, contributions, outline]
+5. key_concepts: 2-3 key technical terms
+6. animation_description: Describe the animation step-by-step:
+   - SCENE: What objects appear (circles, boxes, particles, etc.)
+   - ACTION: What motion happens (merge, split, flow, transform, pulse)
+   - INSIGHT: What moment shows the "aha" understanding
+7. content: Original text excerpt (brief - for reference only)
+
+=== EXAMPLE ===
+For a paper about "attention mechanisms in transformers":
+
+{
+  "concept_summary": "The model learns to focus on relevant parts of the input, ignoring irrelevant parts, like a spotlight on a stage",
+  "visual_metaphor": "A spotlight sweeping across words, brightening important ones while dimming others",
+  "topic": "Attention Mechanism",
+  "topic_category": "approach",
+  "key_concepts": ["attention weights", "query-key-value", "self-attention"],
+  "animation_description": {
+    "scene": "A row of words (boxes) with a glowing orb (attention head) above them",
+    "action": "The orb sends beams down to each word, beams vary in brightness based on attention weight. High-attention words glow and rise slightly.",
+    "insight": "Show the weighted sum - beams converge into a single output, with brightest contributions most visible"
+  },
+  "content": "The attention mechanism allows the model to..."
+}
+
+Return a JSON object with a "segments" array containing 3-5 segments."""
             },
             {
                 "role": "user",
-                "content": f"Segment this introduction into 3-5 logical parts (keep it concise):\n\n{introduction}"
+                "content": f"Deeply understand this research introduction and extract the CORE IDEAS that can be visualized:\n\n{introduction}"
             }
         ]
         
@@ -485,67 +532,91 @@ Return ONLY Python code. No markdown, no explanations.'''
         # Extract first line of viz_hint for the required visual type
         viz_type = viz_hint.split('\n')[0].split(':')[0].strip() if '\n' in viz_hint else viz_hint.split(':')[0].strip()
         
-        user_prompt = f'''Create a 3BLUE1BROWN-STYLE visual explanation for this concept.
+        # Get conceptual understanding from segment (new fields from enhanced segmentation)
+        concept_summary = segment.get('concept_summary', segment.get('content', '')[:200])
+        visual_metaphor = segment.get('visual_metaphor', '')
+        animation_desc = segment.get('animation_description', {})
+        
+        # Build animation guidance from conceptual understanding
+        animation_guidance = ""
+        if animation_desc:
+            if isinstance(animation_desc, dict):
+                animation_guidance = f"""
+=== PRE-DEFINED ANIMATION PLAN ===
+SCENE SETUP: {animation_desc.get('scene', 'Create appropriate visual objects')}
+ACTION/MOTION: {animation_desc.get('action', 'Animate the core concept')}
+KEY INSIGHT: {animation_desc.get('insight', 'Highlight the main understanding')}
+"""
+            else:
+                animation_guidance = f"\n=== ANIMATION APPROACH ===\n{animation_desc}\n"
+        
+        user_prompt = f'''Create a 3BLUE1BROWN-STYLE visual explanation for this research CONCEPT.
+
+=== THE CORE IDEA TO VISUALIZE ===
+{concept_summary}
+
+=== VISUAL METAPHOR TO USE ===
+{visual_metaphor if visual_metaphor else "Choose an appropriate visual metaphor based on the concept"}
 
 Topic: {segment.get('topic', 'Research Concept')}
 Category: {topic_category}
-Key Concepts: {', '.join(segment.get('key_concepts', []))}
+Key Terms: {', '.join(segment.get('key_concepts', []))}
+{animation_guidance}
 
-Context (use to INSPIRE your visuals, do NOT display as text):
-{segment.get('content', '')[:600]}
+=== YOUR MISSION ===
+You are NOT displaying text - you are EXPLAINING an IDEA through ANIMATION.
 
-=== 3BLUE1BROWN APPROACH ===
-Imagine you're explaining this to someone who learns VISUALLY:
+Think: "How would 3Blue1Brown explain this concept?"
+- What SHAPES represent the key elements?
+- What MOTION shows the relationship/process?
+- What TRANSFORMATION reveals the insight?
 
-1. **VISUAL METAPHOR**: What real-world object or phenomenon represents this concept?
-   - Atoms? Show orbiting electrons, pulsing nuclei
-   - Data flow? Show particles streaming along paths
-   - Comparison? Show morphing shapes, side-by-side with transformations
-   - Networks? Show nodes with signals propagating through connections
-   - Growth? Show expanding circles, building blocks stacking
+=== CONCEPT-TO-VISUAL MAPPING ===
+Based on the concept, choose the right visualization:
 
-2. **ANIMATED EXPLANATION**: Show the concept IN ACTION
-   - If two things combine: animate them MERGING
-   - If something transforms: show the MORPHING step-by-step
-   - If there's cause-effect: show RIPPLES or DOMINO effects
-   - If there's a process: show DATA FLOWING through stages
+IF the concept is about COMBINING/INTEGRATION:
+→ Show separate objects MERGING into one (particles converging, circles overlapping)
 
-3. **BUILD UNDERSTANDING GRADUALLY**:
-   - Start simple (one shape)
-   - Add complexity piece by piece
-   - Highlight key moments with PULSE or GLOW effects
-   - End with the complete picture
+IF the concept is about TRANSFORMATION/CHANGE:
+→ Show MORPHING (shape A smoothly becomes shape B)
 
-=== SPECIFIC VISUAL REQUIREMENTS ===
-For "{topic_category}":
-{viz_hint}
+IF the concept is about PROCESS/FLOW:
+→ Show PARTICLES/DATA flowing through stages (dots moving along paths)
+
+IF the concept is about COMPARISON:
+→ Show SIDE-BY-SIDE with visual differences (size, color, position)
+
+IF the concept is about HIERARCHY/STRUCTURE:
+→ Show TREE or NETWORK with connections appearing
+
+IF the concept is about PROBLEM→SOLUTION:
+→ Show BROKEN state first, then REPAIR/FIX animation
+
+IF the concept is about IMPROVEMENT/OPTIMIZATION:
+→ Show GROWTH (expanding circles, rising bars, climbing path)
+
+IF the concept is about ATTENTION/FOCUS:
+→ Show SPOTLIGHT effect (beam highlighting relevant parts)
+
+IF the concept is about LEARNING/TRAINING:
+→ Show ITERATIVE REFINEMENT (repeated adjustments, dial tuning)
 
 === TECHNICAL REQUIREMENTS ===
-1. 8-12 animated objects minimum
-2. Use transforms, particles, or physics-like motion
-3. Colors should convey meaning (blue=input, green=process, red=output)
-4. Motion should guide understanding
-5. Build complexity gradually - don't show everything at once
+1. 8-15 animated objects (shapes, particles, arrows)
+2. Motion MUST convey the concept (not decoration)
+3. Colors encode meaning: BLUE=input, GREEN=process, YELLOW=highlight, RED=output
+4. Build complexity gradually - start simple
+5. Have a clear "AHA moment" where the insight becomes visible
 
-=== SCENE STRUCTURE ===
-1. Simple title appears
-2. Core visual metaphor introduces itself
-3. Animation plays out showing the concept in action
-4. Key insight highlighted with emphasis effect
-5. Satisfying conclusion/resolution
-6. Fadeout and Xe-Bot branding
+=== STRUCTURE ===
+1. Brief title (2-4 words)
+2. Visual metaphor appears and animates
+3. Core concept demonstrated through motion
+4. Insight moment (pulse, glow, transformation)
+5. Resolution (complete picture)
+6. Fadeout + Xe-Bot branding
 
-Make it BEAUTIFUL and ENLIGHTENING - viewers should UNDERSTAND through WATCHING!
-
-Generate the Manim code:'''
-1. Title appears (with subtle decoration)
-2. Main visual builds piece by piece
-3. Key elements PULSE or GLOW for emphasis
-4. Optional: Data/info flows through the diagram
-5. Smooth fadeout
-6. Xe-Bot branding
-
-Make it VISUALLY IMPRESSIVE - like a professional motion graphic!
+The viewer should UNDERSTAND the concept just by WATCHING - no reading required!
 
 Generate the Manim code:'''
         
@@ -611,25 +682,45 @@ Generate the Manim code:'''
         Returns:
             Complete Manim code for full animation
         """
-        # Create a summary of all segments with visualization hints
+        # Create a summary of all segments with conceptual understanding
         visualization_hints = {
-            'background': 'ANIMATED SCENE with moving particles, timeline, or interconnected nodes',
-            'problem_statement': 'VISUAL PROBLEM: broken chain, X marks, gaps, RED highlights',
-            'motivation': 'IMPACT DIAGRAM: domino effect, ripples, growth animation',
-            'related_work': 'COMPARISON: side-by-side boxes with VS, checkmarks/X marks',
-            'approach': 'PIPELINE FLOWCHART: boxes with animated data flow (moving dots)',
-            'contributions': 'ACHIEVEMENT SHOWCASE: numbered badges, stars, checkmark animations',
-            'outline': 'ROADMAP: connected milestones with curved paths',
-            'general': 'CONCEPT WEB: central node with radiating connections'
+            'background': 'CONTEXT: floating particles, interconnected nodes, establishing the field',
+            'problem_statement': 'PROBLEM: visual breakdown, cracks appearing, things going wrong',
+            'motivation': 'IMPACT: ripple effects, domino chains, showing why this matters',
+            'related_work': 'COMPARISON: morphing between approaches, side-by-side differences',
+            'approach': 'SOLUTION: pipeline with data flowing, transformation stages',
+            'contributions': 'ACHIEVEMENTS: stars appearing, building blocks stacking, unlocking',
+            'outline': 'JOURNEY: path with milestones, roadmap revealing',
+            'general': 'CONCEPT: central idea with orbiting related concepts'
         }
         
-        segment_summary = "\n\n".join([
-            f"SEGMENT {i+1}: {s.get('topic', 'Topic')}\n"
-            f"Category: {s.get('topic_category', 'general')}\n"
-            f"Visualization: {visualization_hints.get(s.get('topic_category', 'general'), 'concept map')}\n"
-            f"Key Concepts: {', '.join(s.get('key_concepts', []))}"
-            for i, s in enumerate(segments[:5])  # Limit to 5 segments
-        ])
+        # Build rich segment descriptions using new conceptual fields
+        segment_descriptions = []
+        for i, s in enumerate(segments[:5]):
+            desc = f"SEGMENT {i+1}: {s.get('topic', 'Topic')}\n"
+            
+            # Use concept_summary if available (from enhanced segmentation)
+            if s.get('concept_summary'):
+                desc += f"CORE IDEA: {s.get('concept_summary')}\n"
+            
+            # Use visual_metaphor if available
+            if s.get('visual_metaphor'):
+                desc += f"VISUAL METAPHOR: {s.get('visual_metaphor')}\n"
+            
+            # Use animation_description if available
+            anim_desc = s.get('animation_description', {})
+            if isinstance(anim_desc, dict) and anim_desc:
+                desc += f"SCENE: {anim_desc.get('scene', '')}\n"
+                desc += f"ACTION: {anim_desc.get('action', '')}\n"
+                desc += f"INSIGHT: {anim_desc.get('insight', '')}\n"
+            
+            desc += f"Category: {s.get('topic_category', 'general')}\n"
+            desc += f"Suggested Visual: {visualization_hints.get(s.get('topic_category', 'general'), 'concept visualization')}\n"
+            desc += f"Key Terms: {', '.join(s.get('key_concepts', []))}"
+            
+            segment_descriptions.append(desc)
+        
+        segment_summary = "\n\n".join(segment_descriptions)
         
         system_prompt = f'''You are a 3Blue1Brown-style animator creating STUNNING VISUAL EXPLANATIONS.
 

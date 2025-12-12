@@ -301,43 +301,111 @@ Return a JSON object with a "segments" array containing 3-5 segments in order.""
         """
         topic_category = segment.get('topic_category', 'general')
         
-        # Choose visualization type based on category
+        # Choose visualization type based on category - ENHANCED for more graphics
         visualization_hints = {
-            'background': 'Use a CONTEXT DIAGRAM: Show the field/domain with labeled areas or a timeline',
-            'problem_statement': 'Use a PROBLEM DIAGRAM: Show what is wrong/missing with X marks or gaps',
-            'motivation': 'Use a CAUSE-EFFECT DIAGRAM: Show why this matters with arrows between consequences',
-            'related_work': 'Use a COMPARISON TABLE or side-by-side boxes showing different approaches',
-            'approach': 'Use a FLOWCHART or ARCHITECTURE DIAGRAM: Show the method step-by-step',
-            'contributions': 'Use NUMBERED BOXES or ICONS: Show key contributions visually',
-            'outline': 'Use a ROADMAP: Show paper structure as connected sections',
-            'general': 'Use a CONCEPT MAP: Show key ideas with connections'
+            'background': '''ANIMATED CONTEXT SCENE:
+- Create a VISUAL METAPHOR (e.g., gears for systems, waves for signals, network for connections)
+- Use ICONS with Circle/Square shapes with small symbols inside
+- Show TIMELINE with animated dots moving along a line
+- Add PULSING effects with .animate.scale() for emphasis''',
+            'problem_statement': '''VISUAL PROBLEM REPRESENTATION:
+- Show BEFORE/AFTER split screen with Line separator
+- Use RED X marks (Cross shape) over broken elements
+- Create CRACKS or GAPS between shapes
+- Animate a BROKEN CHAIN or MISSING PUZZLE piece
+- Use color transition from GREEN to RED for degradation''',
+            'motivation': '''CAUSE-EFFECT ANIMATION:
+- Create DOMINO EFFECT with falling rectangles
+- Show RIPPLE animation with expanding circles
+- Use GROWTH animation (small to large) for impact
+- Create BRANCHING tree showing consequences
+- Animate VALUE METER going up/down''',
+            'related_work': '''COMPARISON VISUALIZATION:
+- Create SIDE-BY-SIDE boxes with VS in middle
+- Use RADAR/SPIDER chart with polygons
+- Show FEATURE MATRIX with checkmarks (green) and X (red)
+- Animate SCALE/BALANCE showing trade-offs
+- Create EVOLUTION timeline showing progression''',
+            'approach': '''ARCHITECTURAL FLOWCHART:
+- Create PIPELINE with boxes and animated arrows
+- Show DATA FLOW with moving dots along paths
+- Use LAYERED ARCHITECTURE (stacked rectangles)
+- Create CIRCULAR PROCESS with rotating arrows
+- Animate STEP-BY-STEP highlighting (glow effect)''',
+            'contributions': '''ACHIEVEMENT SHOWCASE:
+- Use NUMBERED BADGES (circles with numbers)
+- Create TROPHY/STAR icons for key points
+- Show CHECKMARK animations appearing
+- Use SPOTLIGHT effect (bright circle) on each point
+- Create BUILDING BLOCKS stacking animation''',
+            'outline': '''ROADMAP VISUALIZATION:
+- Create JOURNEY PATH with milestones
+- Show CHAPTER ICONS connected by curved lines
+- Use MAP-STYLE layout with location dots
+- Animate PROGRESS BAR filling up
+- Create BOOK/SCROLL unfurling effect''',
+            'general': '''CONCEPT VISUALIZATION:
+- Create MIND MAP with central node and branches
+- Use ICON GRID with labeled symbols
+- Show RELATIONSHIP WEB with connecting lines
+- Create INFOGRAPHIC-STYLE layout
+- Animate REVEAL sequence with staggered FadeIn'''
         }
         
         viz_hint = visualization_hints.get(topic_category, visualization_hints['general'])
         
-        system_prompt = f'''You are an expert Manim animator creating VISUAL EXPLANATIONS of research concepts.
+        system_prompt = f'''You are an expert Manim animator creating CINEMATIC VISUAL EXPLANATIONS.
 
 === CORE PHILOSOPHY ===
-VISUALIZE concepts through DIAGRAMS and ANIMATIONS - NOT walls of text!
-Your job is to SHOW how concepts work, not to display paragraphs.
+Create VISUALLY STUNNING animations with MOTION GRAPHICS!
+You are making a VISUAL STORY, not a PowerPoint. Use shapes, colors, motion!
 
 === CRITICAL: NO TEXT OVERLAP ===
 EVERY section MUST start fresh. Before ANY new content:
   self.play(*[FadeOut(m) for m in self.mobjects])
 
-=== VISUALIZATION TYPE FOR THIS SEGMENT ===
+=== VISUALIZATION STYLE FOR THIS SEGMENT ===
 {viz_hint}
 
-=== WHAT TO CREATE ===
-For "{topic_category}" content, create one of these:
-- FLOWCHART: Boxes connected by arrows showing process flow
-- NEURAL NETWORK: Layers of nodes with connections (for ML topics)
-- ARCHITECTURE: Component boxes with labeled connections
-- COMPARISON: Side-by-side boxes showing differences
-- GRAPH/CHART: Axes with bars or lines for quantitative data
-- TREE/HIERARCHY: Parent-child node relationships
-- VENN DIAGRAM: Overlapping circles for related concepts
-- STATE MACHINE: States with transition arrows
+=== GRAPHICAL ELEMENTS TO USE ===
+SHAPES: Circle, Square, Rectangle, RoundedRectangle, Triangle, Star, Arrow, Line, Arc, Polygon
+GROUPS: VGroup to combine shapes, .arrange() for layout
+EFFECTS: 
+  - .animate.scale(1.2) for pulse/emphasis
+  - .animate.set_color(NEW_COLOR) for color transitions
+  - .animate.shift(direction) for movement
+  - FadeIn(mob, shift=UP) for directional fades
+  - GrowFromCenter(shape) for dramatic reveals
+  - Rotating(mob) for spinning effects
+  - Flash(point) for attention
+
+=== ADVANCED TECHNIQUES ===
+1. PARTICLE EFFECTS: Create VGroup of small dots, animate them moving
+2. GLOW EFFECT: Create larger blurred shape behind main shape
+3. PROGRESS BARS: Rectangle with another inside that grows
+4. PULSING: Use .animate.scale(1.1) then .animate.scale(1) in loop
+5. CONNECTIONS: Use CurvedArrow or bezier paths
+6. ICONS: Combine basic shapes (circle + triangle = play button)
+7. GRADIENTS: Use linear_gradient or fill_opacity variations
+
+=== SHAPE RECIPES ===
+# Neural Network Node
+node = Circle(radius=0.3, color=BLUE, fill_opacity=0.8)
+
+# Data Packet (moving dot)
+packet = Dot(color=YELLOW).scale(1.5)
+
+# Icon Box
+icon = VGroup(
+    RoundedRectangle(width=1.5, height=1.5, corner_radius=0.2, fill_opacity=0.2, color=GREEN),
+    Star(n=5, color=YELLOW, fill_opacity=1).scale(0.3)
+)
+
+# Progress Bar
+bg = RoundedRectangle(width=4, height=0.3, corner_radius=0.1, color=GRAY, fill_opacity=0.3)
+fill = RoundedRectangle(width=0.1, height=0.25, corner_radius=0.1, color=GREEN, fill_opacity=1)
+fill.align_to(bg, LEFT)
+# Animate: self.play(fill.animate.stretch_to_fit_width(3.8))
 
 === ABSOLUTE REQUIREMENTS ===
 1. Use ONLY: from manim import *
@@ -345,7 +413,9 @@ For "{topic_category}" content, create one of these:
 3. NEVER use MathTex, Tex, or LaTeX - ONLY Text()
 4. ASCII characters only (no unicode bullets, arrows)
 5. Duration: 15-30 seconds
-6. MAX 3 short labels per diagram (1-3 words each)
+6. Minimum 5 animated shapes/objects (not counting text)
+7. Use at least 3 different colors
+8. Include at least ONE motion effect (scale, rotate, shift)
 
 === GOLDEN RULES ===
 1. CREATE shapes first
@@ -406,18 +476,36 @@ class SegmentAnimation(Scene):
 
 Return ONLY Python code. No markdown, no explanations.'''
         
-        user_prompt = f'''Create a VISUAL animation that EXPLAINS this concept through a DIAGRAM.
+        # Extract first line of viz_hint for the required visual type
+        viz_type = viz_hint.split('\n')[0].split(':')[0].strip() if '\n' in viz_hint else viz_hint.split(':')[0].strip()
+        
+        user_prompt = f'''Create a CINEMATIC, GRAPHICALLY RICH animation for this research concept.
 
 Topic: {segment.get('topic', 'Research Concept')}
 Category: {topic_category}
-Key Concepts to VISUALIZE: {', '.join(segment.get('key_concepts', []))}
+Key Concepts: {', '.join(segment.get('key_concepts', []))}
 
-Content to understand (DO NOT display this as text - CREATE A DIAGRAM instead):
-{segment.get('content', '')[:800]}
+Context (use to INSPIRE your visuals, do NOT display as text):
+{segment.get('content', '')[:600]}
 
-REQUIRED: Create a {viz_hint.split(':')[0].lower()} that shows the key relationships.
-Use shapes, arrows, and SHORT labels (1-3 words).
-End with 'Animation by Xe-Bot' branding.
+=== YOUR MISSION ===
+Create a {viz_type} with these REQUIREMENTS:
+1. At least 5-8 animated SHAPES (circles, boxes, arrows, lines, stars)
+2. MOTION: Objects should move, scale, pulse, or transform
+3. COLOR TRANSITIONS: Use .animate.set_color() for emphasis
+4. LAYERED COMPOSITION: Background elements + foreground action
+5. SHORT labels only (1-3 words max per label)
+6. SMOOTH FLOW: Each element leads to the next
+
+=== STRUCTURE ===
+1. Title appears (with subtle decoration)
+2. Main visual builds piece by piece
+3. Key elements PULSE or GLOW for emphasis
+4. Optional: Data/info flows through the diagram
+5. Smooth fadeout
+6. Xe-Bot branding
+
+Make it VISUALLY IMPRESSIVE - like a professional motion graphic!
 
 Generate the Manim code:'''
         
@@ -485,14 +573,14 @@ Generate the Manim code:'''
         """
         # Create a summary of all segments with visualization hints
         visualization_hints = {
-            'background': 'context diagram or timeline',
-            'problem_statement': 'problem diagram with gaps/issues',
-            'motivation': 'cause-effect arrows',
-            'related_work': 'comparison boxes',
-            'approach': 'flowchart or architecture',
-            'contributions': 'numbered contribution boxes',
-            'outline': 'roadmap diagram',
-            'general': 'concept map'
+            'background': 'ANIMATED SCENE with moving particles, timeline, or interconnected nodes',
+            'problem_statement': 'VISUAL PROBLEM: broken chain, X marks, gaps, RED highlights',
+            'motivation': 'IMPACT DIAGRAM: domino effect, ripples, growth animation',
+            'related_work': 'COMPARISON: side-by-side boxes with VS, checkmarks/X marks',
+            'approach': 'PIPELINE FLOWCHART: boxes with animated data flow (moving dots)',
+            'contributions': 'ACHIEVEMENT SHOWCASE: numbered badges, stars, checkmark animations',
+            'outline': 'ROADMAP: connected milestones with curved paths',
+            'general': 'CONCEPT WEB: central node with radiating connections'
         }
         
         segment_summary = "\n\n".join([
@@ -503,11 +591,11 @@ Generate the Manim code:'''
             for i, s in enumerate(segments[:5])  # Limit to 5 segments
         ])
         
-        system_prompt = f'''You are an expert Manim animator creating VISUAL EXPLANATIONS of research papers.
+        system_prompt = f'''You are an expert Manim animator creating CINEMATIC, GRAPHICALLY RICH animations.
 
 === CORE PHILOSOPHY ===
-Create DIAGRAMS and ANIMATIONS to explain concepts - NOT walls of text!
-Each segment needs its own visual diagram. Viewers should UNDERSTAND by SEEING.
+Create MOTION GRAPHICS like a professional video! Use shapes, colors, animations!
+Each segment needs VISUAL IMPACT. Viewers should be IMPRESSED and UNDERSTAND.
 
 === CRITICAL: PREVENT TEXT OVERLAP ===
 Before EVERY new segment:
@@ -515,21 +603,29 @@ Before EVERY new segment:
 
 This is MANDATORY to clear the screen between sections.
 
+=== GRAPHICAL TECHNIQUES TO USE ===
+1. PARTICLE EFFECTS: Background dots that float/pulse
+2. ANIMATED CONNECTIONS: Arrows that grow, dots that flow along paths
+3. PULSING EMPHASIS: shape.animate.scale(1.2) then back to 1
+4. COLOR TRANSITIONS: shape.animate.set_color(NEW_COLOR)
+5. STAGGERED REVEALS: Elements appear one by one with delays
+6. LAYERED COMPOSITION: Background decorations + main content
+
 === STRUCTURE ===
-1. Title slide (paper title, 3 seconds)
+1. TITLE SLIDE: Paper title with animated decorative lines
 2. Each segment gets:
-   - Segment title (2 words max)
-   - ONE diagram visualization (flowchart, neural network, comparison, etc.)
+   - Segment title (2 words max) with underline animation
+   - ONE rich diagram visualization (minimum 5 shapes)
+   - Motion/pulse effects on key elements
    - Clear screen before next
-3. Branding slide at end
+3. BRANDING: Animated "Animation by Xe-Bot"
 
 === VISUALIZATION TYPES ===
-Choose based on segment category:
-- background -> Context diagram, timeline
-- problem_statement -> Problem diagram (show gaps, issues)
-- approach -> Flowchart, architecture diagram
-- contributions -> Numbered boxes, icons
-- For ML/AI topics -> Neural network layers with nodes
+- background -> Floating particles + context nodes
+- problem_statement -> Visual breakdown with RED X marks, cracks
+- approach -> Pipeline with ANIMATED data flow (moving dots)
+- contributions -> Trophy/star icons with glow effects
+- For ML/AI -> Neural network with signal propagation animation
 
 === REQUIREMENTS ===
 1. from manim import *
@@ -537,28 +633,46 @@ Choose based on segment category:
 3. ONLY Text() - NO MathTex, Tex, LaTeX
 4. ASCII only
 5. Duration: 45-90 seconds total
-6. MAX 5 segments
+6. MINIMUM 5 shapes per segment (not counting text)
+7. At least ONE motion effect per segment (scale, shift, color change)
 
 === ORDER OF OPERATIONS (EVERY SEGMENT) ===
 1. FadeOut all existing: self.play(*[FadeOut(m) for m in self.mobjects])
-2. Create segment title
-3. Create shapes
+2. Create segment title with decoration
+3. Create shapes (circles, boxes, stars, lines)
 4. Position shapes with .shift()
-5. Create labels AFTER positioning
-6. Create arrows AFTER positioning  
-7. Animate
+5. Add MOTION (pulsing, color change, movement)
+6. Create labels AFTER positioning
+7. Create arrows with GrowArrow
 8. Wait 2-3 seconds
 9. FadeOut before next segment
 
 === LAYOUT ===
 - Title: .to_edge(UP, buff=0.5), font_size=36
-- Shapes: width 2-3, height 1
+- Shapes: varied sizes for visual interest
 - Positions: LEFT*3, ORIGIN, RIGHT*3
 - Labels: font_size=18-20, 1-3 words only
 - Frame: x=-7 to 7, y=-4 to 4
 
-=== NEURAL NETWORK EXAMPLE ===
-# For ML topics, show layers:
+=== ADVANCED EXAMPLE ===
+# Background particle effect
+particles = VGroup()
+for _ in range(15):
+    p = Dot(radius=0.05, color=BLUE, fill_opacity=0.3)
+    p.move_to([np.random.uniform(-6, 6), np.random.uniform(-3, 3), 0])
+    particles.add(p)
+self.add(particles)
+self.play(*[p.animate.shift(UP*0.3) for p in particles], run_time=2)
+
+# Pulsing node emphasis
+node = Circle(radius=0.5, color=GREEN, fill_opacity=0.8)
+self.play(node.animate.scale(1.3), run_time=0.3)
+self.play(node.animate.scale(1/1.3), run_time=0.3)
+
+# Animated data flow
+path = Line(LEFT*3, RIGHT*3)
+dot = Dot(color=YELLOW).move_to(path.get_start())
+self.play(MoveAlongPath(dot, path), run_time=2)
 layers = []
 for i, (size, color) in enumerate([(3, RED), (4, BLUE), (2, GREEN)]):
     layer = VGroup()
@@ -616,19 +730,26 @@ class PaperAnimation(Scene):
 
 Return ONLY Python code. No markdown, no explanations.'''
         
-        user_prompt = f'''Create a complete Manim animation for this research paper.
+        user_prompt = f'''Create a CINEMATIC, GRAPHICALLY RICH Manim animation for this research paper.
 
 Paper Title: {title[:80]}
 
-SEGMENTS TO VISUALIZE (create a DIAGRAM for each, not text):
+SEGMENTS TO VISUALIZE:
 {segment_summary}
 
-REQUIREMENTS:
-1. Clear screen (FadeOut all) BEFORE each new segment
-2. Each segment gets ONE diagram (flowchart, neural network, comparison, etc.)
-3. Labels are 1-3 words only
-4. Position shapes FIRST, then create labels and arrows
-5. End with "Animation by Xe-Bot" branding
+=== YOUR MISSION ===
+Create a VISUALLY STUNNING animation that looks like a professional motion graphic!
+
+MANDATORY REQUIREMENTS:
+1. FadeOut ALL before each new segment: self.play(*[FadeOut(m) for m in self.mobjects])
+2. Each segment: MINIMUM 5 animated shapes (circles, boxes, arrows, stars)
+3. Include MOTION EFFECTS: pulsing (.animate.scale), color transitions, moving elements
+4. Add VISUAL FLAIR: background particles, decorative lines, glows
+5. Labels: 1-3 words MAXIMUM
+6. Position shapes FIRST, then create labels
+7. End with animated "Animation by Xe-Bot" branding
+
+MAKE IT IMPRESSIVE - like a professional explainer video!
 
 Generate the complete Manim code:'''
         

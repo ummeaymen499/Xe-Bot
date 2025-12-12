@@ -179,7 +179,7 @@ export const startAsyncProcess = async (arxivId: string): Promise<{ job_id: stri
 };
 
 export const getJobStatus = async (jobId: string): Promise<JobStatus> => {
-  const response = await api.get(`/api/jobs/${jobId}`, { timeout: 10000 });
+  const response = await api.get(`/api/jobs/${jobId}`, { timeout: 60000 }); // 60 second timeout
   return response.data;
 };
 
@@ -187,11 +187,15 @@ export const getJobStatus = async (jobId: string): Promise<JobStatus> => {
 export const pollJobUntilComplete = async (
   jobId: string,
   onProgress?: (status: JobStatus) => void,
-  pollInterval: number = 3000
+  pollInterval: number = 5000,  // Poll every 5 seconds
+  maxAttempts: number = 180     // Max 15 minutes (180 * 5 seconds)
 ): Promise<JobStatus> => {
   return new Promise((resolve, reject) => {
+    let attempts = 0;
+    
     const poll = async () => {
       try {
+        attempts++;
         const status = await getJobStatus(jobId);
         onProgress?.(status);
         
@@ -199,11 +203,19 @@ export const pollJobUntilComplete = async (
           resolve(status);
         } else if (status.status === 'failed') {
           reject(new Error(status.error || 'Job failed'));
+        } else if (attempts >= maxAttempts) {
+          reject(new Error('Job timed out after 15 minutes'));
         } else {
           setTimeout(poll, pollInterval);
         }
       } catch (err) {
-        reject(err);
+        // On network error, retry a few times before giving up
+        if (attempts < 3) {
+          console.warn(`Poll attempt ${attempts} failed, retrying...`);
+          setTimeout(poll, pollInterval * 2); // Wait longer on error
+        } else {
+          reject(err);
+        }
       }
     };
     poll();

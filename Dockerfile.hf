@@ -49,12 +49,12 @@ RUN mkdir -p output/animations/videos output/media/videos cache/papers
 # Expose port (HF Spaces uses 7860)
 EXPOSE 7860
 
-# Environment variables
-ENV PYTHONUNBUFFERED=1
-ENV PORT=7860
-ENV ANIMATION_QUALITY=low_quality
-ENV ANIMATION_FPS=15
-ENV RENDER_TIMEOUT=300
+# Environment variables - PORT must be set for server.py
+ENV PYTHONUNBUFFERED=1 \
+    PORT=7860 \
+    ANIMATION_QUALITY=low_quality \
+    ANIMATION_FPS=15 \
+    RENDER_TIMEOUT=300
 
-# Run server
-CMD ["python", "server.py"]
+# Run server on port 7860
+CMD ["sh", "-c", "PORT=7860 python server.py"]

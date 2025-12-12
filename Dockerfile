@@ -1,7 +1,7 @@
 # Xe-Bot Docker Configuration
 # Multi-stage build for production deployment
 
-FROM python:3.11-slim as backend
+FROM python:3.11-slim AS backend
 
 WORKDIR /app
 
@@ -36,10 +36,9 @@ ENV VIDEO_BASE_URL=http://localhost:8000
 # Run server
 CMD ["python", "server.py"]
 
----
 
 # Frontend build stage
-FROM node:20-alpine as frontend-build
+FROM node:20-alpine AS frontend-build
 
 WORKDIR /app/frontend
 
@@ -55,10 +54,9 @@ COPY frontend/ ./
 # Build frontend
 RUN npm run build
 
----
 
 # Production stage with Nginx
-FROM nginx:alpine as production
+FROM nginx:alpine AS production
 
 # Copy built frontend
 COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html

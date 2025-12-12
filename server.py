@@ -712,9 +712,8 @@ async def process_animation_job(
     try:
         JOBS[job_id]["status"] = "processing"
         
-        # Run the animation pipeline
-        workflow = orchestrator.WorkflowOrchestrator()
-        result = await workflow.process_paper(
+        # Run the animation pipeline (orchestrator is already an instance)
+        result = await orchestrator.process_paper(
             arxiv_id=arxiv_id,
             render_animations=render,
             save_to_db=True

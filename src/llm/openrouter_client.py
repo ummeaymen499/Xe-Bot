@@ -299,136 +299,127 @@ Return a JSON object with a "segments" array containing 3-5 segments in order.""
         Returns:
             Valid Manim Python code
         """
-        system_prompt = (
-            "You are an expert Manim animator creating VISUAL EXPLANATIONS of concepts.\n\n"
-            "=== CORE PHILOSOPHY ===\n"
-            "VISUALIZE concepts through animations and diagrams - NOT walls of text!\n"
-            "- Show HOW things work with moving shapes, arrows, and transformations\n"
-            "- Use diagrams, flowcharts, and visual metaphors to explain ideas\n"
-            "- Minimal text: only short labels (1-3 words) inside shapes\n"
-            "- Let the ANIMATION tell the story, not paragraphs of text\n\n"
-            "=== ABSOLUTE REQUIREMENTS ===\n"
-            "1. Generate ONLY valid Manim Community Edition Python code\n"
-            "2. Use Scene class as base\n"
-            "3. Include: from manim import *\n"
-            "4. NEVER use MathTex, Tex, or LaTeX - ONLY use Text()\n"
-            "5. Use only ASCII characters\n"
-            "6. Duration: 15-40 seconds\n\n"
-            "=== VISUALIZATION TECHNIQUES ===\n"
-            "Use these to explain concepts visually:\n"
-            "- FLOWCHARTS: boxes with arrows showing process/data flow\n"
-            "- DIAGRAMS: shapes representing components and their relationships\n"
-            "- ANIMATIONS: Transform(), MoveToTarget(), GrowArrow() to show change\n"
-            "- COLOR CODING: different colors for different concepts\n"
-            "- HIGHLIGHTING: Indicate() or Circumscribe() to draw attention\n"
-            "- GROWTH: shapes growing/shrinking to show importance/scale\n"
-            "- CONNECTIONS: arrows/lines showing relationships\n"
-            "- LAYERING: build up complex diagrams piece by piece\n\n"
-            "=== WHAT TO AVOID ===\n"
-            "- NO long sentences or paragraphs of text\n"
-            "- NO bullet point lists displayed as text\n"
-            "- NO text dumps - if you need to explain, use a diagram\n"
-            "- Labels should be 1-3 words MAX inside shapes\n\n"
-            "=== GOLDEN RULE: ORDER OF OPERATIONS ===\n"
-            "1. CREATE all shapes\n"
-            "2. POSITION shapes using .shift() or .move_to()\n"
-            "3. CREATE labels and use .move_to(shape) to place inside\n"
-            "4. CREATE arrows using positioned shapes' .get_right()/.get_left()\n"
-            "5. ANIMATE everything\n"
-            "6. FADEOUT everything before next section\n\n"
-            "=== ARROW POSITIONING ===\n"
-            "WRONG: Create arrow before positioning shapes (arrow points to origin)\n"
-            "CORRECT: Position shapes FIRST, then create arrow\n"
-            "Example:\n"
-            "  box1 = Rectangle(width=2, height=1, color=BLUE, fill_opacity=0.3)\n"
-            "  box2 = Rectangle(width=2, height=1, color=GREEN, fill_opacity=0.3)\n"
-            "  box1.shift(LEFT*3)  # Position FIRST\n"
-            "  box2.shift(RIGHT*3)\n"
-            "  arrow = Arrow(box1.get_right(), box2.get_left(), buff=0.1)  # THEN arrow\n\n"
-            "=== LABEL POSITIONING ===\n"
-            "WRONG: label.move_to(box) before box is positioned\n"
-            "CORRECT: Position box first, then label.move_to(box)\n"
-            "Example:\n"
-            "  box.shift(LEFT*3)  # Position FIRST\n"
-            "  label = Text('Name', font_size=20)\n"
-            "  label.move_to(box)  # NOW label inside box\n\n"
-            "=== NO TEXT OVERLAP ===\n"
-            "EVERY section MUST end with:\n"
-            "  self.play(*[FadeOut(m) for m in self.mobjects])\n\n"
-            "=== SCREEN LAYOUT ===\n"
-            "- Frame: x from -7 to 7, y from -4 to 4\n"
-            "- Title: .to_edge(UP, buff=0.5)\n"
-            "- Main content: shift DOWN*0.5 to leave room for title\n"
-            "- Shapes: width 2-3, height 1-1.5\n"
-            "- Spacing between shapes: 3-4 units\n"
-            "- Labels: font_size 18-22\n\n"
-            "=== COMPLETE FLOWCHART EXAMPLE ===\n"
-            "from manim import *\n\n"
-            "class FlowchartScene(Scene):\n"
-            "    def construct(self):\n"
-            "        title = Text('Process Flow', font_size=40, color=BLUE)\n"
-            "        title.to_edge(UP, buff=0.5)\n"
-            "        self.play(Write(title))\n\n"
-            "        # Create shapes\n"
-            "        box1 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=RED, fill_opacity=0.3)\n"
-            "        box2 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=BLUE, fill_opacity=0.3)\n"
-            "        box3 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=GREEN, fill_opacity=0.3)\n\n"
-            "        # Position shapes FIRST\n"
-            "        box1.shift(LEFT*4)\n"
-            "        # box2 at center\n"
-            "        box3.shift(RIGHT*4)\n\n"
-            "        # Labels AFTER positioning\n"
-            "        label1 = Text('Input', font_size=20)\n"
-            "        label1.move_to(box1)\n"
-            "        label2 = Text('Process', font_size=20)\n"
-            "        label2.move_to(box2)\n"
-            "        label3 = Text('Output', font_size=20)\n"
-            "        label3.move_to(box3)\n\n"
-            "        # Arrows AFTER positioning\n"
-            "        arrow1 = Arrow(box1.get_right(), box2.get_left(), buff=0.1, color=WHITE)\n"
-            "        arrow2 = Arrow(box2.get_right(), box3.get_left(), buff=0.1, color=WHITE)\n\n"
-            "        # Animate\n"
-            "        self.play(Create(box1), Write(label1))\n"
-            "        self.play(GrowArrow(arrow1))\n"
-            "        self.play(Create(box2), Write(label2))\n"
-            "        self.play(GrowArrow(arrow2))\n"
-            "        self.play(Create(box3), Write(label3))\n"
-            "        self.wait(2)\n\n"
-            "        # Clear screen\n"
-            "        self.play(*[FadeOut(m) for m in self.mobjects])\n\n"
-            "        # Branding\n"
-            "        brand = Text('Animation by Xe-Bot', font_size=36, color=BLUE)\n"
-            "        self.play(FadeIn(brand))\n"
-            "        self.wait(2)\n"
-            "        self.play(FadeOut(brand))\n\n"
-            "Return ONLY Python code. No markdown, no explanations."
-        )
+        topic_category = segment.get('topic_category', 'general')
         
-        user_prompt = (
-            f"Create a VISUAL animation that EXPLAINS this concept through diagrams and motion.\n\n"
-            f"GOAL: Make viewers UNDERSTAND the concept by SEEING it, not reading about it.\n\n"
-            f"VISUALIZATION IDEAS for this topic:\n"
-            f"- If it's a PROCESS: show flowchart with arrows between steps\n"
-            f"- If it's COMPONENTS: show boxes/circles with connections\n"
-            f"- If it's COMPARISON: show side-by-side with visual differences\n"
-            f"- If it's TRANSFORMATION: animate the change happening\n"
-            f"- If it's HIERARCHY: show tree or layered structure\n\n"
-            f"CRITICAL ORDER:\n"
-            f"1. Create shapes\n"
-            f"2. Position shapes with .shift() or .move_to()\n"
-            f"3. Create SHORT labels (1-3 words) and .move_to(shape)\n"
-            f"4. Create arrows using positioned shapes' .get_right()/.get_left()\n"
-            f"5. Animate with meaningful motion (show flow, transformation, relationships)\n"
-            f"6. FadeOut everything before next section\n\n"
-            f"Topic: {segment.get('topic', 'Research Concept')}\n"
-            f"Category: {segment.get('topic_category', 'general')}\n"
-            f"Key Concepts to VISUALIZE: {', '.join(segment.get('key_concepts', []))}\n\n"
-            f"Content (extract the CONCEPT to visualize, don't display this as text):\n{segment.get('content', '')}\n\n"
-            f"Style: {animation_style}\n\n"
-            f"Remember: SHOW the concept with shapes and motion, don't TELL with text walls.\n"
-            f"End with 'Animation by Xe-Bot' branding.\n\n"
-            f"Generate the code:"
-        )
+        # Choose visualization type based on category
+        visualization_hints = {
+            'background': 'Use a CONTEXT DIAGRAM: Show the field/domain with labeled areas or a timeline',
+            'problem_statement': 'Use a PROBLEM DIAGRAM: Show what is wrong/missing with X marks or gaps',
+            'motivation': 'Use a CAUSE-EFFECT DIAGRAM: Show why this matters with arrows between consequences',
+            'related_work': 'Use a COMPARISON TABLE or side-by-side boxes showing different approaches',
+            'approach': 'Use a FLOWCHART or ARCHITECTURE DIAGRAM: Show the method step-by-step',
+            'contributions': 'Use NUMBERED BOXES or ICONS: Show key contributions visually',
+            'outline': 'Use a ROADMAP: Show paper structure as connected sections',
+            'general': 'Use a CONCEPT MAP: Show key ideas with connections'
+        }
+        
+        viz_hint = visualization_hints.get(topic_category, visualization_hints['general'])
+        
+        system_prompt = f'''You are an expert Manim animator creating VISUAL EXPLANATIONS of research concepts.
+
+=== CORE PHILOSOPHY ===
+VISUALIZE concepts through DIAGRAMS and ANIMATIONS - NOT walls of text!
+Your job is to SHOW how concepts work, not to display paragraphs.
+
+=== CRITICAL: NO TEXT OVERLAP ===
+EVERY section MUST start fresh. Before ANY new content:
+  self.play(*[FadeOut(m) for m in self.mobjects])
+
+=== VISUALIZATION TYPE FOR THIS SEGMENT ===
+{viz_hint}
+
+=== WHAT TO CREATE ===
+For "{topic_category}" content, create one of these:
+- FLOWCHART: Boxes connected by arrows showing process flow
+- NEURAL NETWORK: Layers of nodes with connections (for ML topics)
+- ARCHITECTURE: Component boxes with labeled connections
+- COMPARISON: Side-by-side boxes showing differences
+- GRAPH/CHART: Axes with bars or lines for quantitative data
+- TREE/HIERARCHY: Parent-child node relationships
+- VENN DIAGRAM: Overlapping circles for related concepts
+- STATE MACHINE: States with transition arrows
+
+=== ABSOLUTE REQUIREMENTS ===
+1. Use ONLY: from manim import *
+2. Scene class as base
+3. NEVER use MathTex, Tex, or LaTeX - ONLY Text()
+4. ASCII characters only (no unicode bullets, arrows)
+5. Duration: 15-30 seconds
+6. MAX 3 short labels per diagram (1-3 words each)
+
+=== GOLDEN RULES ===
+1. CREATE shapes first
+2. POSITION with .shift() or .move_to()
+3. CREATE labels AFTER positioning, then label.move_to(shape)
+4. CREATE arrows AFTER positioning shapes
+5. ANIMATE
+6. FADEOUT everything: self.play(*[FadeOut(m) for m in self.mobjects])
+
+=== LAYOUT ===
+- Title: .to_edge(UP, buff=0.5), font_size=36
+- Shapes: width 2-3, height 1-1.5
+- Positions: LEFT*4, ORIGIN, RIGHT*4 for 3 items
+- Labels inside shapes: font_size=18-20
+- Colors: Use RED, BLUE, GREEN, ORANGE, PURPLE, YELLOW
+
+=== EXAMPLE PATTERN ===
+from manim import *
+
+class SegmentAnimation(Scene):
+    def construct(self):
+        # Title
+        title = Text("Topic Name", font_size=36, color=BLUE)
+        title.to_edge(UP, buff=0.5)
+        self.play(Write(title))
+        
+        # Create shapes FIRST
+        box1 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=RED, fill_opacity=0.3)
+        box2 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=GREEN, fill_opacity=0.3)
+        
+        # Position SECOND
+        box1.shift(LEFT*3 + DOWN*0.5)
+        box2.shift(RIGHT*3 + DOWN*0.5)
+        
+        # Labels THIRD (after positioning)
+        lbl1 = Text("Input", font_size=20)
+        lbl1.move_to(box1)
+        lbl2 = Text("Output", font_size=20)
+        lbl2.move_to(box2)
+        
+        # Arrows FOURTH (after positioning)
+        arrow = Arrow(box1.get_right(), box2.get_left(), buff=0.1, color=WHITE)
+        
+        # Animate
+        self.play(Create(box1), Write(lbl1))
+        self.play(GrowArrow(arrow))
+        self.play(Create(box2), Write(lbl2))
+        self.wait(2)
+        
+        # ALWAYS clear before next section or branding
+        self.play(*[FadeOut(m) for m in self.mobjects])
+        
+        # Branding
+        brand = Text("Animation by Xe-Bot", font_size=36, color=BLUE)
+        self.play(FadeIn(brand))
+        self.wait(2)
+        self.play(FadeOut(brand))
+
+Return ONLY Python code. No markdown, no explanations.'''
+        
+        user_prompt = f'''Create a VISUAL animation that EXPLAINS this concept through a DIAGRAM.
+
+Topic: {segment.get('topic', 'Research Concept')}
+Category: {topic_category}
+Key Concepts to VISUALIZE: {', '.join(segment.get('key_concepts', []))}
+
+Content to understand (DO NOT display this as text - CREATE A DIAGRAM instead):
+{segment.get('content', '')[:800]}
+
+REQUIRED: Create a {viz_hint.split(':')[0].lower()} that shows the key relationships.
+Use shapes, arrows, and SHORT labels (1-3 words).
+End with 'Animation by Xe-Bot' branding.
+
+Generate the Manim code:'''
         
         messages = [
             {"role": "system", "content": system_prompt},
@@ -492,134 +483,154 @@ Return a JSON object with a "segments" array containing 3-5 segments in order.""
         Returns:
             Complete Manim code for full animation
         """
-        # Create a summary of all segments
+        # Create a summary of all segments with visualization hints
+        visualization_hints = {
+            'background': 'context diagram or timeline',
+            'problem_statement': 'problem diagram with gaps/issues',
+            'motivation': 'cause-effect arrows',
+            'related_work': 'comparison boxes',
+            'approach': 'flowchart or architecture',
+            'contributions': 'numbered contribution boxes',
+            'outline': 'roadmap diagram',
+            'general': 'concept map'
+        }
+        
         segment_summary = "\n\n".join([
-            f"Segment {i+1}: {s.get('topic', 'Topic')}\n"
+            f"SEGMENT {i+1}: {s.get('topic', 'Topic')}\n"
             f"Category: {s.get('topic_category', 'general')}\n"
-            f"Key Concepts: {', '.join(s.get('key_concepts', []))}\n"
-            f"Content: {s.get('content', '')[:500]}..."
-            for i, s in enumerate(segments)
+            f"Visualization: {visualization_hints.get(s.get('topic_category', 'general'), 'concept map')}\n"
+            f"Key Concepts: {', '.join(s.get('key_concepts', []))}"
+            for i, s in enumerate(segments[:5])  # Limit to 5 segments
         ])
         
-        system_prompt = (
-            "You are an expert Manim animator creating VISUAL EXPLANATIONS of research concepts.\n\n"
-            "=== CORE PHILOSOPHY ===\n"
-            "VISUALIZE concepts through animations and diagrams - NOT walls of text!\n"
-            "- Show HOW things work with moving shapes, arrows, and transformations\n"
-            "- Use diagrams, flowcharts, and visual metaphors to explain ideas\n"
-            "- Minimal text: only short labels (1-3 words) inside shapes\n"
-            "- Let the ANIMATION tell the story, not paragraphs of text\n"
-            "- Each segment should have at least ONE diagram or visual representation\n\n"
-            "=== VISUALIZATION TECHNIQUES ===\n"
-            "- FLOWCHARTS: boxes with arrows showing process/data flow\n"
-            "- ARCHITECTURE DIAGRAMS: components and their connections\n"
-            "- NEURAL NETWORK VISUALS: layers, nodes, connections\n"
-            "- COMPARISON: side-by-side visuals showing differences\n"
-            "- TRANSFORMATION: animate changes (e.g., input -> output)\n"
-            "- HIGHLIGHTING: Indicate(), Circumscribe() for emphasis\n"
-            "- COLOR CODING: different colors = different concepts\n"
-            "- BUILDING UP: complex diagrams piece by piece\n\n"
-            "=== REQUIREMENTS ===\n"
-            "1. Generate ONLY valid Manim Community Edition Python code\n"
-            "2. Single Scene class for entire animation\n"
-            "3. Include: from manim import *\n"
-            "4. NEVER use MathTex, Tex, or LaTeX - ONLY use Text()\n"
-            "5. Use only ASCII characters\n"
-            "6. Total duration: 30-90 seconds\n"
-            "7. EVERY segment must have a VISUAL (diagram, flowchart, etc.)\n\n"
-            "=== GOLDEN RULE: ORDER OF OPERATIONS ===\n"
-            "1. CREATE all shapes\n"
-            "2. POSITION shapes using .shift()\n"
-            "3. CREATE labels and .move_to(shape)\n"
-            "4. CREATE arrows using positioned shapes\n"
-            "5. ANIMATE everything\n"
-            "6. FADEOUT everything before next section\n\n"
-            "=== ARROW POSITIONING ===\n"
-            "WRONG: Create arrow before positioning shapes\n"
-            "CORRECT: Position shapes FIRST, then create arrow\n"
-            "Example:\n"
-            "  box1 = Rectangle(width=2, height=1, color=BLUE, fill_opacity=0.3)\n"
-            "  box2 = Rectangle(width=2, height=1, color=GREEN, fill_opacity=0.3)\n"
-            "  box1.shift(LEFT*3)  # Position FIRST\n"
-            "  box2.shift(RIGHT*3)\n"
-            "  arrow = Arrow(box1.get_right(), box2.get_left(), buff=0.1)  # THEN arrow\n\n"
-            "=== LABEL POSITIONING ===\n"
-            "WRONG: label.move_to(box) before box is positioned\n"
-            "CORRECT: Position box first, then create label and move_to\n"
-            "Example:\n"
-            "  box.shift(LEFT*3)  # Position FIRST\n"
-            "  label = Text('Name', font_size=20)\n"
-            "  label.move_to(box)  # NOW label inside box\n\n"
-            "=== NO TEXT OVERLAP ===\n"
-            "EVERY segment MUST end with:\n"
-            "  self.play(*[FadeOut(m) for m in self.mobjects])\n\n"
-            "=== SCREEN LAYOUT ===\n"
-            "- Frame: x from -7 to 7, y from -4 to 4\n"
-            "- Title: .to_edge(UP, buff=0.5)\n"
-            "- Shapes: width 2-3, height 1-1.5\n"
-            "- Spacing: LEFT*4, ORIGIN, RIGHT*4\n\n"
-            "=== COMPLETE EXAMPLE ===\n"
-            "from manim import *\n\n"
-            "class PaperIntro(Scene):\n"
-            "    def construct(self):\n"
-            "        # Title\n"
-            "        title = Text('Paper Title', font_size=44, color=BLUE)\n"
-            "        self.play(Write(title))\n"
-            "        self.wait(2)\n"
-            "        self.play(FadeOut(title))\n\n"
-            "        # Segment with diagram\n"
-            "        seg_title = Text('Background', font_size=36, color=GREEN)\n"
-            "        seg_title.to_edge(UP, buff=0.5)\n"
-            "        self.play(Write(seg_title))\n\n"
-            "        # Create and position shapes\n"
-            "        box1 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=RED, fill_opacity=0.3)\n"
-            "        box2 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=GREEN, fill_opacity=0.3)\n"
-            "        box1.shift(LEFT*3)\n"
-            "        box2.shift(RIGHT*3)\n\n"
-            "        # Labels AFTER positioning\n"
-            "        lbl1 = Text('Input', font_size=20)\n"
-            "        lbl1.move_to(box1)\n"
-            "        lbl2 = Text('Output', font_size=20)\n"
-            "        lbl2.move_to(box2)\n\n"
-            "        # Arrow AFTER positioning\n"
-            "        arrow = Arrow(box1.get_right(), box2.get_left(), buff=0.1, color=WHITE)\n\n"
-            "        # Animate\n"
-            "        self.play(Create(box1), Write(lbl1))\n"
-            "        self.play(GrowArrow(arrow))\n"
-            "        self.play(Create(box2), Write(lbl2))\n"
-            "        self.wait(2)\n\n"
-            "        # Clear before next\n"
-            "        self.play(*[FadeOut(m) for m in self.mobjects])\n\n"
-            "        # Branding\n"
-            "        brand = Text('Animation by Xe-Bot', font_size=40, color=BLUE)\n"
-            "        self.play(FadeIn(brand))\n"
-            "        self.wait(2)\n"
-            "        self.play(FadeOut(brand))\n\n"
-            "Return ONLY Python code. No markdown, no explanations."
-        )
+        system_prompt = f'''You are an expert Manim animator creating VISUAL EXPLANATIONS of research papers.
+
+=== CORE PHILOSOPHY ===
+Create DIAGRAMS and ANIMATIONS to explain concepts - NOT walls of text!
+Each segment needs its own visual diagram. Viewers should UNDERSTAND by SEEING.
+
+=== CRITICAL: PREVENT TEXT OVERLAP ===
+Before EVERY new segment:
+  self.play(*[FadeOut(m) for m in self.mobjects])
+
+This is MANDATORY to clear the screen between sections.
+
+=== STRUCTURE ===
+1. Title slide (paper title, 3 seconds)
+2. Each segment gets:
+   - Segment title (2 words max)
+   - ONE diagram visualization (flowchart, neural network, comparison, etc.)
+   - Clear screen before next
+3. Branding slide at end
+
+=== VISUALIZATION TYPES ===
+Choose based on segment category:
+- background -> Context diagram, timeline
+- problem_statement -> Problem diagram (show gaps, issues)
+- approach -> Flowchart, architecture diagram
+- contributions -> Numbered boxes, icons
+- For ML/AI topics -> Neural network layers with nodes
+
+=== REQUIREMENTS ===
+1. from manim import *
+2. Single Scene class
+3. ONLY Text() - NO MathTex, Tex, LaTeX
+4. ASCII only
+5. Duration: 45-90 seconds total
+6. MAX 5 segments
+
+=== ORDER OF OPERATIONS (EVERY SEGMENT) ===
+1. FadeOut all existing: self.play(*[FadeOut(m) for m in self.mobjects])
+2. Create segment title
+3. Create shapes
+4. Position shapes with .shift()
+5. Create labels AFTER positioning
+6. Create arrows AFTER positioning  
+7. Animate
+8. Wait 2-3 seconds
+9. FadeOut before next segment
+
+=== LAYOUT ===
+- Title: .to_edge(UP, buff=0.5), font_size=36
+- Shapes: width 2-3, height 1
+- Positions: LEFT*3, ORIGIN, RIGHT*3
+- Labels: font_size=18-20, 1-3 words only
+- Frame: x=-7 to 7, y=-4 to 4
+
+=== NEURAL NETWORK EXAMPLE ===
+# For ML topics, show layers:
+layers = []
+for i, (size, color) in enumerate([(3, RED), (4, BLUE), (2, GREEN)]):
+    layer = VGroup()
+    for j in range(size):
+        node = Circle(radius=0.2, color=color, fill_opacity=0.6)
+        node.move_to([i*3 - 3, j*0.8 - size*0.4, 0])
+        layer.add(node)
+    layers.append(layer)
+    self.play(*[GrowFromCenter(n) for n in layer])
+
+=== EXAMPLE STRUCTURE ===
+from manim import *
+
+class PaperAnimation(Scene):
+    def construct(self):
+        # Title slide
+        title = Text("Paper Title", font_size=40, color=BLUE)
+        self.play(Write(title))
+        self.wait(2)
+        self.play(*[FadeOut(m) for m in self.mobjects])
         
-        user_prompt = (
-            f"Create a complete Manim animation that VISUALLY EXPLAINS this research paper.\n\n"
-            f"GOAL: Viewers should UNDERSTAND the concepts by SEEING diagrams and animations,\n"
-            f"not by reading walls of text. Each segment needs a VISUAL representation.\n\n"
-            f"FOR EACH SEGMENT, create one of these visuals:\n"
-            f"- Background/Problem: diagram showing the challenge or current state\n"
-            f"- Approach/Method: flowchart showing the process or architecture\n"
-            f"- Components: boxes with arrows showing how parts connect\n"
-            f"- Results: visual comparison or transformation\n\n"
-            f"CRITICAL ORDER for each visual:\n"
-            f"1. Create shapes (boxes, circles, etc.)\n"
-            f"2. Position with .shift()\n"
-            f"3. Create SHORT labels (1-3 words) and .move_to(shape)\n"
-            f"4. Create arrows AFTER positioning\n"
-            f"5. Animate with meaningful motion\n"
-            f"6. FadeOut ALL before next segment\n\n"
-            f"Paper Title: {title}\n\n"
-            f"Segments to VISUALIZE (don't just display this text, CREATE DIAGRAMS for each):\n{segment_summary}\n\n"
-            f"Remember: SHOW concepts with visuals, don't TELL with text dumps.\n"
-            f"End with 'Animation by Xe-Bot' branding.\n\n"
-            f"Generate the complete Manim code:"
-        )
+        # Segment 1: Background (context diagram)
+        seg1_title = Text("Background", font_size=36, color=GREEN)
+        seg1_title.to_edge(UP, buff=0.5)
+        self.play(Write(seg1_title))
+        
+        # Create positioned shapes for diagram
+        box1 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=RED, fill_opacity=0.3)
+        box2 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=GREEN, fill_opacity=0.3)
+        box1.shift(LEFT*3)
+        box2.shift(RIGHT*3)
+        
+        lbl1 = Text("Concept A", font_size=18)
+        lbl1.move_to(box1)
+        lbl2 = Text("Concept B", font_size=18)
+        lbl2.move_to(box2)
+        
+        arrow = Arrow(box1.get_right(), box2.get_left(), buff=0.1, color=WHITE)
+        
+        self.play(Create(box1), Write(lbl1))
+        self.play(GrowArrow(arrow))
+        self.play(Create(box2), Write(lbl2))
+        self.wait(2)
+        
+        # CLEAR before next segment
+        self.play(*[FadeOut(m) for m in self.mobjects])
+        
+        # ... more segments ...
+        
+        # Branding
+        brand = Text("Animation by Xe-Bot", font_size=40, color=BLUE)
+        self.play(FadeIn(brand))
+        self.wait(2)
+        self.play(FadeOut(brand))
+
+Return ONLY Python code. No markdown, no explanations.'''
+        
+        user_prompt = f'''Create a complete Manim animation for this research paper.
+
+Paper Title: {title[:80]}
+
+SEGMENTS TO VISUALIZE (create a DIAGRAM for each, not text):
+{segment_summary}
+
+REQUIREMENTS:
+1. Clear screen (FadeOut all) BEFORE each new segment
+2. Each segment gets ONE diagram (flowchart, neural network, comparison, etc.)
+3. Labels are 1-3 words only
+4. Position shapes FIRST, then create labels and arrows
+5. End with "Animation by Xe-Bot" branding
+
+Generate the complete Manim code:'''
         
         messages = [
             {"role": "system", "content": system_prompt},

@@ -56,6 +56,42 @@ class ManimAnimationGenerator:
             return match.group(1)
         return "GeneratedScene"
     
+    def _ensure_fadeouts_between_sections(self, code: str) -> str:
+        """Ensure FadeOut is called between sections to prevent text overlap"""
+        import re
+        
+        # Pattern to find segment titles or section markers
+        # Add FadeOut before creating new segment titles if not already present
+        lines = code.split('\n')
+        new_lines = []
+        prev_had_fadeout = True  # Assume start is clean
+        
+        for i, line in enumerate(lines):
+            stripped = line.strip()
+            
+            # Check if this line creates a segment title or major section
+            is_new_section = (
+                'seg_title' in stripped.lower() or
+                'segment' in stripped.lower() and 'Text(' in stripped or
+                re.match(r'.*=\s*Text\(["\'](?:Segment|Section|Background|Problem|Approach|Method|Result|Conclusion)', stripped, re.IGNORECASE)
+            )
+            
+            # If new section and previous lines don't have FadeOut, inject one
+            if is_new_section and not prev_had_fadeout:
+                indent = len(line) - len(line.lstrip())
+                fadeout_line = ' ' * indent + 'self.play(*[FadeOut(m) for m in self.mobjects])'
+                new_lines.append(fadeout_line)
+            
+            new_lines.append(line)
+            
+            # Track if current line has FadeOut
+            if 'FadeOut' in stripped and 'self.mobjects' in stripped:
+                prev_had_fadeout = True
+            elif 'self.play(' in stripped or 'self.wait(' in stripped:
+                prev_had_fadeout = False
+        
+        return '\n'.join(new_lines)
+    
     def _inject_branding(self, code: str) -> str:
         """Inject 'Animation by Xe-Bot' branding at the end of construct method if not present"""
         import re
@@ -64,7 +100,7 @@ class ManimAnimationGenerator:
         if "Animation by Xe-Bot" in code or "Xe-Bot" in code:
             return code
         
-        # Branding code to inject
+        # Branding code to inject (with FadeOut to clear screen first)
         branding_code = '''
         # === Xe-Bot Branding ===
         self.play(*[FadeOut(mob) for mob in self.mobjects if mob is not None])
@@ -115,13 +151,17 @@ class ManimAnimationGenerator:
         return '\n'.join(new_lines)
     
     def _ensure_valid_manim_code(self, code: str) -> str:
-        """Ensure the code has proper Manim imports and structure"""
+        """Ensure the code has proper Manim imports, structure, and FadeOuts between sections"""
         import re
         
         # Check if imports exist
         if "from manim import" not in code and "import manim" not in code:
-            imports = "from manim import *\n\n"
+            imports = "from manim import *\nimport numpy as np\n\n"
             code = imports + code
+        
+        # Ensure numpy is imported (used in some templates)
+        if "import numpy" not in code and "np." in code:
+            code = "import numpy as np\n" + code
         
         # Replace any MathTex/Tex with Text to avoid LaTeX requirement
         code = re.sub(r'MathTex\s*\(', 'Text(', code)
@@ -135,6 +175,8 @@ class ManimAnimationGenerator:
         code = code.replace('≠', '!=')
         code = code.replace('≤', '<=')
         code = code.replace('≥', '>=')
+        code = code.replace('"', '"').replace('"', '"')  # Smart quotes
+        code = code.replace(''', "'").replace(''', "'")  # Smart apostrophes
         
         # Check if there's a Scene class
         if "class" not in code or "Scene" not in code:

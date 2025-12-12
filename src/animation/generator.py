@@ -35,8 +35,10 @@ class ManimAnimationGenerator:
     
     def __init__(self):
         self.output_dir = config.animation.output_dir
-        self.quality = config.animation.quality
-        self.fps = config.animation.fps
+        # Use lowest quality for faster rendering on limited resources
+        self.quality = os.getenv("ANIMATION_QUALITY", "low_quality")
+        self.fps = int(os.getenv("ANIMATION_FPS", "15"))  # Lower FPS for faster render
+        self.render_timeout = int(os.getenv("RENDER_TIMEOUT", "120"))  # 2 min timeout
         self.output_dir.mkdir(parents=True, exist_ok=True)
     
     def _create_temp_script(self, code: str, scene_name: str) -> Path:
@@ -242,12 +244,12 @@ class GeneratedScene(Scene):
             
             console.print(f"[cyan]Running: {' '.join(cmd)}[/cyan]")
             
-            # Run manim
+            # Run manim with configurable timeout
             result = subprocess.run(
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=180,  # 3 minute timeout per animation
+                timeout=self.render_timeout,  # Configurable timeout (default 2 min)
                 cwd=temp_dir
             )
             

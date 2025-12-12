@@ -132,7 +132,7 @@ Rules:
             introduction: The introduction text
         
         Returns:
-            List of segments with topic labels and key concepts (4-7 segments)
+            List of segments with topic labels and key concepts (3-5 segments)
         """
         messages = [
             {
@@ -141,31 +141,28 @@ Rules:
 Your task is to break down a research paper introduction into logical segments.
 
 === CRITICAL REQUIREMENT ===
-You MUST create between 4 and 7 segments (inclusive). No fewer than 4, no more than 7.
-If the introduction is short, expand concepts into separate segments.
-If the introduction is long, combine related concepts to stay within 7 segments.
+You MUST create between 3 and 5 segments (inclusive). No fewer than 3, no more than 5.
+Keep it concise - combine related concepts to stay within 5 segments.
 
-Suggested segment structure for comprehensive coverage:
+Suggested segment structure:
 1. Background/Context (what field/area this is about)
-2. Problem Statement (what problem exists)
-3. Motivation (why this matters)
-4. Related Work/Prior Approaches (what's been tried before)
-5. Proposed Approach (what this paper does)
-6. Key Contributions (main contributions/innovations)
-7. Paper Outline (optional - structure of paper)
+2. Problem Statement (what problem exists and why it matters)
+3. Proposed Approach (what this paper does)
+4. Key Contributions (main contributions/innovations)
+5. Summary/Outline (optional - brief overview)
 
 For each segment, provide:
-1. content: The actual text of the segment
-2. topic: A short descriptive title for the segment (2-5 words)
+1. content: The actual text of the segment (keep it brief - 2-3 sentences max)
+2. topic: A short descriptive title for the segment (2-4 words)
 3. topic_category: One of [background, problem_statement, motivation, related_work, approach, contributions, outline]
-4. key_concepts: List of 3-5 key terms/concepts mentioned
-5. animation_hints: Suggestions for how to visualize this segment (diagrams, flowcharts, comparisons, etc.)
+4. key_concepts: List of 2-3 key terms/concepts mentioned
+5. animation_hints: Brief suggestion for visualization (1 sentence)
 
-Return a JSON object with a "segments" array containing 4-7 segments in order."""
+Return a JSON object with a "segments" array containing 3-5 segments in order."""
             },
             {
                 "role": "user",
-                "content": f"Segment this introduction into 4-7 logical parts:\n\n{introduction}"
+                "content": f"Segment this introduction into 3-5 logical parts (keep it concise):\n\n{introduction}"
             }
         ]
         
@@ -185,11 +182,11 @@ Return a JSON object with a "segments" array containing 4-7 segments in order.""
     
     def _validate_segment_count(self, segments: List[Dict[str, Any]], introduction: str) -> List[Dict[str, Any]]:
         """
-        Ensure segment count is between 4 and 7.
+        Ensure segment count is between 3 and 5.
         If too few, split or add segments. If too many, merge.
         """
-        MIN_SEGMENTS = 4
-        MAX_SEGMENTS = 7
+        MIN_SEGMENTS = 3
+        MAX_SEGMENTS = 5
         
         if len(segments) < MIN_SEGMENTS:
             console.print(f"[yellow]Warning: Only {len(segments)} segments, creating fallback segments[/yellow]")
@@ -197,7 +194,7 @@ Return a JSON object with a "segments" array containing 4-7 segments in order.""
         
         if len(segments) > MAX_SEGMENTS:
             console.print(f"[yellow]Warning: {len(segments)} segments exceeds max of {MAX_SEGMENTS}, trimming[/yellow]")
-            # Keep the most important segments (first 6 + last one for outline/contributions)
+            # Keep only the first MAX_SEGMENTS
             segments = segments[:6] + [segments[-1]] if len(segments) > 7 else segments[:MAX_SEGMENTS]
         
         return segments

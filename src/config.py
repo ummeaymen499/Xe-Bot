@@ -14,7 +14,7 @@ class OpenRouterConfig(BaseModel):
     """OpenRouter API Configuration"""
     api_key: str = os.getenv("OPENROUTER_API_KEY", "")
     base_url: str = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
-    default_model: str = os.getenv("DEFAULT_MODEL", "openai/gpt-4.1-mini")
+    default_model: str = os.getenv("DEFAULT_MODEL", "openai/gpt-4o-mini")
 
 
 class DatabaseConfig(BaseModel):

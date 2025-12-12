@@ -1,12 +1,12 @@
 # Xe-Bot Docker Configuration
-# Multi-stage build for production deployment
+# Backend-only build for Render deployment
 
-FROM python:3.11-slim AS backend
+FROM python:3.11-slim
 
 WORKDIR /app
 
 # Install system dependencies for Manim
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     libcairo2-dev \
     libpango1.0-dev \
@@ -14,56 +14,29 @@ RUN apt-get update && apt-get install -y \
     texlive-latex-extra \
     texlive-fonts-recommended \
     texlive-science \
-    && rm -rf /var/lib/apt/lists/*
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY . .
+COPY src/ ./src/
+COPY server.py .
+COPY main.py .
+COPY mcp_server.py .
 
 # Create output directories
-RUN mkdir -p output/animations/videos output/media cache/papers
+RUN mkdir -p output/animations/videos output/media/videos cache/papers
 
 # Expose port
 EXPOSE 8000
 
 # Environment variables
 ENV PYTHONUNBUFFERED=1
-ENV VIDEO_BASE_URL=http://localhost:8000
+ENV PORT=8000
 
 # Run server
 CMD ["python", "server.py"]
-
-
-# Frontend build stage
-FROM node:20-alpine AS frontend-build
-
-WORKDIR /app/frontend
-
-# Copy package files
-COPY frontend/package*.json ./
-
-# Install dependencies
-RUN npm ci
-
-# Copy frontend source
-COPY frontend/ ./
-
-# Build frontend
-RUN npm run build
-
-
-# Production stage with Nginx
-FROM nginx:alpine AS production
-
-# Copy built frontend
-COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
-
-# Copy nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]

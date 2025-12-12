@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Video, Search, Download, Play, Loader2, RefreshCw, 
+  Search, Download, Play, Loader2, RefreshCw, 
   FolderOpen, ChevronRight,
   Grid, ArrowLeft, ExternalLink, Film, Sparkles
 } from 'lucide-react';

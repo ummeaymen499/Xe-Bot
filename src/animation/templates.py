@@ -235,49 +235,6 @@ class FlowDiagramAnimation(Scene):
         self.wait(1)
         self.play(*[FadeOut(mob) for mob in self.mobjects])
 '''
-            text.move_to(box)
-            
-            group = VGroup(box, text)
-            boxes.add(group)
-        
-        # Arrange boxes
-        if len(boxes) <= 3:
-            boxes.arrange(RIGHT, buff=1)
-        else:
-            top_row = VGroup(*boxes[:3])
-            bottom_row = VGroup(*boxes[3:])
-            top_row.arrange(RIGHT, buff=1)
-            bottom_row.arrange(RIGHT, buff=1)
-            VGroup(top_row, bottom_row).arrange(DOWN, buff=1)
-        
-        boxes.next_to(title, DOWN, buff=1)
-        
-        # Animate boxes appearing
-        for box in boxes:
-            self.play(Create(box[0]), Write(box[1]), run_time=0.5)
-        
-        # Add arrows between boxes
-        for i in range(len(boxes) - 1):
-            if i < 2 or (i >= 3 and i < 5):
-                arrow = Arrow(
-                    boxes[i].get_right(),
-                    boxes[i+1].get_left(),
-                    buff=0.1,
-                    color=WHITE
-                )
-            else:
-                arrow = Arrow(
-                    boxes[i].get_bottom(),
-                    boxes[i+1].get_top(),
-                    buff=0.1,
-                    color=WHITE
-                )
-            arrows.add(arrow)
-            self.play(Create(arrow), run_time=0.3)
-        
-        self.wait(3)
-        self.play(FadeOut(boxes), FadeOut(arrows), FadeOut(title))
-'''
 
     @staticmethod
     def highlight_text(text: str, highlights: List[str], title: str = "Key Points") -> str:

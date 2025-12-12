@@ -19,7 +19,7 @@ class OpenRouterConfig(BaseModel):
 
 class DatabaseConfig(BaseModel):
     """Neon Database Configuration"""
-    database_url: str = os.getenv("NEON_DATABASE_URL", "")
+    database_url: str = os.getenv("DATABASE_URL", os.getenv("NEON_DATABASE_URL", ""))
 
 
 class AnimationConfig(BaseModel):

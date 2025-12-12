@@ -155,9 +155,14 @@ class DatabaseManager:
         self.database_url = config.database.database_url
         self.engine = None
         self.SessionLocal = None
+        self._initialized = False
     
     def init_sync_engine(self):
         """Initialize synchronous engine with connection pooling for Neon"""
+        if not self.database_url:
+            print("⚠ No DATABASE_URL configured - running without database")
+            return None
+        
         # Neon-optimized settings: handle connection drops gracefully
         self.engine = create_engine(
             self.database_url, 
@@ -179,6 +184,9 @@ class DatabaseManager:
     
     def create_tables(self):
         """Create all tables"""
+        if not self.database_url:
+            print("⚠ Skipping table creation - no database configured")
+            return
         if not self.engine:
             self.init_sync_engine()
         Base.metadata.create_all(self.engine)
@@ -186,6 +194,8 @@ class DatabaseManager:
     
     def get_session(self):
         """Get a database session with auto-reconnect"""
+        if not self.database_url:
+            return None
         if not self.SessionLocal:
             self.init_sync_engine()
         try:

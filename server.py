@@ -666,7 +666,7 @@ async def api_search(
 async def api_generate(
     data: GenerateRequest,
     background_tasks: BackgroundTasks,
-    user: Dict = Depends(require_api_key)
+    user: Dict = Depends(verify_api_key)  # Optional auth - allows unauthenticated
 ):
     """Generate animation - Returns job ID for async processing"""
     
@@ -678,7 +678,7 @@ async def api_generate(
         "arxiv_id": data.arxiv_id,
         "quality": data.quality,
         "created_at": datetime.utcnow().isoformat(),
-        "user": user.get("name"),
+        "user": user.get("name") if user else "anonymous",
         "videos": [],
         "error": None
     }

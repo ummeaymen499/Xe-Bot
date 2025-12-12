@@ -1,0 +1,26 @@
+# Render Blueprint - Backend Deployment Configuration
+# Deploy with: https://render.com/docs/infrastructure-as-code
+
+services:
+  # Backend API Service
+  - type: web
+    name: xe-bot-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.render
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false  # Set manually in dashboard
+      - key: DATABASE_URL
+        sync: false  # Your Neon PostgreSQL URL
+      - key: VIDEO_BASE_URL
+        generateValue: true  # Will be set to service URL
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    disk:
+      name: xe-bot-storage
+      mountPath: /app/output
+      sizeGB: 1  # Free tier limit

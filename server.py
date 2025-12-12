@@ -859,8 +859,12 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # ==================== MAIN ====================
 
-def run_server(host: str = "0.0.0.0", port: int = 8000):
+def run_server(host: str = "0.0.0.0", port: int = None):
     """Run the API server"""
+    # Use PORT env variable for cloud deployment (Render, Railway, etc.)
+    if port is None:
+        port = int(os.getenv("PORT", 8000))
+    
     print(f"""
     ╔═══════════════════════════════════════════════════════════╗
     ║               Xe-Bot Animation API Server                 ║

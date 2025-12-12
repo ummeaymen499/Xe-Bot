@@ -301,185 +301,191 @@ Return a JSON object with a "segments" array containing 3-5 segments in order.""
         """
         topic_category = segment.get('topic_category', 'general')
         
-        # Choose visualization type based on category - ENHANCED for more graphics
+        # Choose visualization type based on category - 3BLUE1BROWN STYLE
         visualization_hints = {
-            'background': '''ANIMATED CONTEXT SCENE:
-- Create a VISUAL METAPHOR (e.g., gears for systems, waves for signals, network for connections)
-- Use ICONS with Circle/Square shapes with small symbols inside
-- Show TIMELINE with animated dots moving along a line
-- Add PULSING effects with .animate.scale() for emphasis''',
-            'problem_statement': '''VISUAL PROBLEM REPRESENTATION:
-- Show BEFORE/AFTER split screen with Line separator
-- Use RED X marks (Cross shape) over broken elements
-- Create CRACKS or GAPS between shapes
-- Animate a BROKEN CHAIN or MISSING PUZZLE piece
-- Use color transition from GREEN to RED for degradation''',
-            'motivation': '''CAUSE-EFFECT ANIMATION:
-- Create DOMINO EFFECT with falling rectangles
-- Show RIPPLE animation with expanding circles
-- Use GROWTH animation (small to large) for impact
-- Create BRANCHING tree showing consequences
-- Animate VALUE METER going up/down''',
-            'related_work': '''COMPARISON VISUALIZATION:
-- Create SIDE-BY-SIDE boxes with VS in middle
-- Use RADAR/SPIDER chart with polygons
-- Show FEATURE MATRIX with checkmarks (green) and X (red)
-- Animate SCALE/BALANCE showing trade-offs
-- Create EVOLUTION timeline showing progression''',
-            'approach': '''ARCHITECTURAL FLOWCHART:
-- Create PIPELINE with boxes and animated arrows
-- Show DATA FLOW with moving dots along paths
-- Use LAYERED ARCHITECTURE (stacked rectangles)
-- Create CIRCULAR PROCESS with rotating arrows
-- Animate STEP-BY-STEP highlighting (glow effect)''',
-            'contributions': '''ACHIEVEMENT SHOWCASE:
-- Use NUMBERED BADGES (circles with numbers)
-- Create TROPHY/STAR icons for key points
-- Show CHECKMARK animations appearing
-- Use SPOTLIGHT effect (bright circle) on each point
-- Create BUILDING BLOCKS stacking animation''',
-            'outline': '''ROADMAP VISUALIZATION:
-- Create JOURNEY PATH with milestones
-- Show CHAPTER ICONS connected by curved lines
-- Use MAP-STYLE layout with location dots
-- Animate PROGRESS BAR filling up
-- Create BOOK/SCROLL unfurling effect''',
-            'general': '''CONCEPT VISUALIZATION:
-- Create MIND MAP with central node and branches
-- Use ICON GRID with labeled symbols
-- Show RELATIONSHIP WEB with connecting lines
-- Create INFOGRAPHIC-STYLE layout
-- Animate REVEAL sequence with staggered FadeIn'''
+            'background': '''3B1B-STYLE CONTEXT VISUALIZATION:
+- Create a CONSTELLATION of floating particles representing the field
+- Use ORBIT animations for interconnected concepts
+- Show WAVE propagation for spreading influence
+- Build a NETWORK with nodes appearing and connecting with animated lines
+- Add SUBTLE MOTION: particles drifting, gentle pulsing of nodes''',
+            'problem_statement': '''3B1B-STYLE PROBLEM VISUALIZATION:
+- Show a WORKING SYSTEM first, then BREAK it (crack appears, pieces separate)
+- Use MORPHING: good shape transforms into broken/corrupted version
+- Create VISUAL TENSION: two opposing forces pulling apart
+- Show MISSING PIECE with glowing outline where something should be
+- Animate DEGRADATION: color fading from GREEN to RED, structure collapsing''',
+            'motivation': '''3B1B-STYLE CAUSE-EFFECT ANIMATION:
+- DOMINO EFFECT: one event triggers cascading animations
+- RIPPLE PROPAGATION: impact spreads outward in concentric waves
+- GROWTH VISUALIZATION: small seed expands into full structure
+- BRANCHING TREE: single root splits and multiplies
+- ENERGY TRANSFER: glowing particles flow from source to destination''',
+            'related_work': '''3B1B-STYLE COMPARISON/EVOLUTION:
+- MORPHING between different approaches (shape A transforms to shape B)
+- TIMELINE with animated progression of dots along a path
+- SIDE-BY-SIDE with connecting bridges showing relationships
+- VENN DIAGRAM building with overlapping circles animating
+- EVOLUTION: primitive form gradually transforms into advanced form''',
+            'approach': '''3B1B-STYLE PIPELINE/PROCESS:
+- DATA FLOW: glowing particles streaming through connected nodes
+- TRANSFORMATION STAGES: object changes form at each step
+- FUNNEL visualization with elements combining and refining
+- ASSEMBLY LINE: components coming together piece by piece
+- SIGNAL PROPAGATION through neural-network-style layers''',
+            'contributions': '''3B1B-STYLE ACHIEVEMENT REVEAL:
+- STARS/GEMS appearing with sparkle effects
+- BUILDING BLOCKS stacking to form complete structure
+- SPOTLIGHT effect illuminating each contribution
+- UNLOCK animation: locked shapes opening to reveal contents
+- CELEBRATION: particles exploding outward in burst pattern''',
+            'outline': '''3B1B-STYLE JOURNEY/ROADMAP:
+- ANIMATED PATH with a dot traveling through milestones
+- MAP REVEAL: regions lighting up as journey progresses
+- SCROLL UNFURLING to show upcoming content
+- STEPPING STONES appearing one by one across a gap
+- CONSTELLATION connecting to form a complete picture''',
+            'general': '''3B1B-STYLE CONCEPT VISUALIZATION:
+- CENTRAL IDEA with orbiting related concepts
+- MIND MAP growing organically from center outward
+- MAGNETIC ATTRACTION: related elements pulling together
+- PUZZLE PIECES assembling into complete picture
+- EMERGENCE: many small particles forming larger coherent shape'''
         }
         
         viz_hint = visualization_hints.get(topic_category, visualization_hints['general'])
         
-        system_prompt = f'''You are an expert Manim animator creating CINEMATIC VISUAL EXPLANATIONS.
+        system_prompt = f'''You are a 3Blue1Brown-style animator creating STUNNING VISUAL EXPLANATIONS.
 
-=== CORE PHILOSOPHY ===
-Create VISUALLY STUNNING animations with MOTION GRAPHICS!
-You are making a VISUAL STORY, not a PowerPoint. Use shapes, colors, motion!
+=== 3BLUE1BROWN PHILOSOPHY ===
+Every concept should be shown through VISUAL INTUITION:
+- Complex ideas become ANIMATED METAPHORS
+- Abstract math becomes GEOMETRIC TRANSFORMATIONS  
+- Relationships are shown as MOVING PARTICLES and FLOWS
+- Understanding comes from WATCHING, not reading
 
-=== CRITICAL: NO TEXT OVERLAP ===
+=== CINEMATIC VISUAL TECHNIQUES ===
+
+**PARTICLE SYSTEMS (for data, information, energy):**
+particles = VGroup(*[Dot(color=BLUE, fill_opacity=0.8).scale(0.3) for _ in range(20)])
+particles.arrange_in_grid(rows=4, cols=5, buff=0.2)
+# Animate particles flowing along a path
+for p in particles:
+    self.play(p.animate.move_to(target), run_time=0.1)
+
+**MORPHING (one shape transforms into another):**
+circle = Circle(color=BLUE, fill_opacity=0.5)
+square = Square(color=RED, fill_opacity=0.5)
+self.play(Transform(circle, square))  # Circle becomes square!
+
+**WAVE ANIMATIONS (for signals, energy, propagation):**
+wave = FunctionGraph(lambda x: np.sin(x), x_range=[-3, 3], color=BLUE)
+self.play(Create(wave))
+self.play(wave.animate.shift(RIGHT*2))  # Wave propagates
+
+**ZOOM AND PAN (focus attention):**
+self.play(group.animate.scale(2).move_to(ORIGIN))  # Zoom into detail
+self.play(self.camera.frame.animate.move_to(point))  # Pan camera
+
+**ORBIT ANIMATIONS (for atoms, electrons, systems):**
+electron = Dot(color=YELLOW).move_to(RIGHT*2)
+orbit = Circle(radius=2, color=WHITE, stroke_opacity=0.3)
+self.play(Rotate(electron, about_point=ORIGIN, angle=2*PI), run_time=2)
+
+**FIELD VISUALIZATIONS (for forces, gradients):**
+arrows = VGroup()
+for x in range(-3, 4):
+    for y in range(-2, 3):
+        arr = Arrow(ORIGIN, UP*0.5, buff=0, stroke_width=2, color=BLUE)
+        arr.move_to([x, y, 0])
+        arrows.add(arr)
+self.play(Create(arrows))
+
+**MOLECULAR/ATOM VISUALIZATIONS:**
+# Nucleus (protons + neutrons clustered)
+nucleus = VGroup(*[Circle(radius=0.15, color=RED if i%2==0 else BLUE, fill_opacity=1).shift(
+    np.array([0.1*np.cos(i*0.8), 0.1*np.sin(i*0.8), 0])
+) for i in range(6)])
+
+# Electron cloud (fuzzy probability)
+cloud = Circle(radius=1.5, color=BLUE, fill_opacity=0.1, stroke_opacity=0.5)
+electrons = VGroup(*[Dot(color=BLUE).scale(0.5).move_to(1.2*np.array([np.cos(a), np.sin(a), 0])) for a in [0, 2.1, 4.2]])
+
+**FUSION VISUALIZATION (two atoms merging):**
+atom1 = Circle(radius=0.5, color=BLUE, fill_opacity=0.7).shift(LEFT*3)
+atom2 = Circle(radius=0.5, color=RED, fill_opacity=0.7).shift(RIGHT*3)
+# Atoms approach
+self.play(atom1.animate.shift(RIGHT*2.5), atom2.animate.shift(LEFT*2.5), run_time=2)
+# Merge and flash
+merged = Circle(radius=0.8, color=YELLOW, fill_opacity=1).move_to(ORIGIN)
+self.play(Transform(atom1, merged), FadeOut(atom2), Flash(ORIGIN, color=WHITE))
+# Energy release - particles explode outward
+particles = VGroup(*[Dot(color=YELLOW).scale(0.3).move_to(ORIGIN) for _ in range(12)])
+self.play(*[p.animate.shift(2*np.array([np.cos(i*PI/6), np.sin(i*PI/6), 0])) for i, p in enumerate(particles)])
+
+**NEURAL NETWORK VISUALIZATION:**
+# Layer of neurons
+def create_layer(n, x_pos, color):
+    layer = VGroup(*[Circle(radius=0.2, color=color, fill_opacity=0.8) for _ in range(n)])
+    layer.arrange(DOWN, buff=0.3).shift(RIGHT*x_pos)
+    return layer
+
+input_layer = create_layer(4, -3, BLUE)
+hidden_layer = create_layer(5, 0, GREEN)  
+output_layer = create_layer(2, 3, RED)
+
+# Connections with signal propagation
+for n1 in input_layer:
+    for n2 in hidden_layer:
+        line = Line(n1.get_right(), n2.get_left(), stroke_opacity=0.3)
+        self.add(line)
+        # Signal pulse
+        pulse = Dot(color=YELLOW, radius=0.05).move_to(n1)
+        self.play(pulse.animate.move_to(n2), run_time=0.1)
+
+**GRAPH/CHART ANIMATIONS:**
+# Bar chart rising
+bars = VGroup()
+heights = [2, 3, 1.5, 4, 2.5]
+for i, h in enumerate(heights):
+    bar = Rectangle(width=0.5, height=0.1, color=BLUE, fill_opacity=0.8).shift(RIGHT*(i-2))
+    bar.align_to(DOWN*2, DOWN)
+    bars.add(bar)
+    self.play(bar.animate.stretch_to_fit_height(h), run_time=0.3)
+
+**CRITICAL: NO TEXT OVERLAP ===
 EVERY section MUST start fresh. Before ANY new content:
   self.play(*[FadeOut(m) for m in self.mobjects])
 
 === VISUALIZATION STYLE FOR THIS SEGMENT ===
 {viz_hint}
 
-=== GRAPHICAL ELEMENTS TO USE ===
-SHAPES: Circle, Square, Rectangle, RoundedRectangle, Triangle, Star, Arrow, Line, Arc, Polygon
-GROUPS: VGroup to combine shapes, .arrange() for layout
-EFFECTS: 
-  - .animate.scale(1.2) for pulse/emphasis
-  - .animate.set_color(NEW_COLOR) for color transitions
-  - .animate.shift(direction) for movement
-  - FadeIn(mob, shift=UP) for directional fades
-  - GrowFromCenter(shape) for dramatic reveals
-  - Rotating(mob) for spinning effects
-  - Flash(point) for attention
-
-=== ADVANCED TECHNIQUES ===
-1. PARTICLE EFFECTS: Create VGroup of small dots, animate them moving
-2. GLOW EFFECT: Create larger blurred shape behind main shape
-3. PROGRESS BARS: Rectangle with another inside that grows
-4. PULSING: Use .animate.scale(1.1) then .animate.scale(1) in loop
-5. CONNECTIONS: Use CurvedArrow or bezier paths
-6. ICONS: Combine basic shapes (circle + triangle = play button)
-7. GRADIENTS: Use linear_gradient or fill_opacity variations
-
-=== SHAPE RECIPES ===
-# Neural Network Node
-node = Circle(radius=0.3, color=BLUE, fill_opacity=0.8)
-
-# Data Packet (moving dot)
-packet = Dot(color=YELLOW).scale(1.5)
-
-# Icon Box
-icon = VGroup(
-    RoundedRectangle(width=1.5, height=1.5, corner_radius=0.2, fill_opacity=0.2, color=GREEN),
-    Star(n=5, color=YELLOW, fill_opacity=1).scale(0.3)
-)
-
-# Progress Bar
-bg = RoundedRectangle(width=4, height=0.3, corner_radius=0.1, color=GRAY, fill_opacity=0.3)
-fill = RoundedRectangle(width=0.1, height=0.25, corner_radius=0.1, color=GREEN, fill_opacity=1)
-fill.align_to(bg, LEFT)
-# Animate: self.play(fill.animate.stretch_to_fit_width(3.8))
-
 === ABSOLUTE REQUIREMENTS ===
 1. Use ONLY: from manim import *
-2. Scene class as base
-3. NEVER use MathTex, Tex, or LaTeX - ONLY Text()
-4. ASCII characters only (no unicode bullets, arrows)
-5. Duration: 15-30 seconds
-6. Minimum 5 animated shapes/objects (not counting text)
-7. Use at least 3 different colors
-8. Include at least ONE motion effect (scale, rotate, shift)
+2. import numpy as np (for math operations)
+3. Scene class as base
+4. NEVER use MathTex, Tex, or LaTeX - ONLY Text()
+5. ASCII characters only (no unicode bullets, arrows)
+6. Duration: 20-40 seconds
+7. Minimum 8-12 animated shapes/objects
+8. Use at least 4 different colors
+9. Include motion effects (particles, transforms, rotations)
+10. ALWAYS clear with FadeOut before new sections
 
 === GOLDEN RULES ===
-1. CREATE shapes first
-2. POSITION with .shift() or .move_to()
-3. CREATE labels AFTER positioning, then label.move_to(shape)
-4. CREATE arrows AFTER positioning shapes
-5. ANIMATE
-6. FADEOUT everything: self.play(*[FadeOut(m) for m in self.mobjects])
-
-=== LAYOUT ===
-- Title: .to_edge(UP, buff=0.5), font_size=36
-- Shapes: width 2-3, height 1-1.5
-- Positions: LEFT*4, ORIGIN, RIGHT*4 for 3 items
-- Labels inside shapes: font_size=18-20
-- Colors: Use RED, BLUE, GREEN, ORANGE, PURPLE, YELLOW
-
-=== EXAMPLE PATTERN ===
-from manim import *
-
-class SegmentAnimation(Scene):
-    def construct(self):
-        # Title
-        title = Text("Topic Name", font_size=36, color=BLUE)
-        title.to_edge(UP, buff=0.5)
-        self.play(Write(title))
-        
-        # Create shapes FIRST
-        box1 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=RED, fill_opacity=0.3)
-        box2 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=GREEN, fill_opacity=0.3)
-        
-        # Position SECOND
-        box1.shift(LEFT*3 + DOWN*0.5)
-        box2.shift(RIGHT*3 + DOWN*0.5)
-        
-        # Labels THIRD (after positioning)
-        lbl1 = Text("Input", font_size=20)
-        lbl1.move_to(box1)
-        lbl2 = Text("Output", font_size=20)
-        lbl2.move_to(box2)
-        
-        # Arrows FOURTH (after positioning)
-        arrow = Arrow(box1.get_right(), box2.get_left(), buff=0.1, color=WHITE)
-        
-        # Animate
-        self.play(Create(box1), Write(lbl1))
-        self.play(GrowArrow(arrow))
-        self.play(Create(box2), Write(lbl2))
-        self.wait(2)
-        
-        # ALWAYS clear before next section or branding
-        self.play(*[FadeOut(m) for m in self.mobjects])
-        
-        # Branding
-        brand = Text("Animation by Xe-Bot", font_size=36, color=BLUE)
-        self.play(FadeIn(brand))
-        self.wait(2)
-        self.play(FadeOut(brand))
+1. SHOW concepts through MOTION, not text
+2. Use METAPHORS viewers can understand visually
+3. Every abstract concept needs a CONCRETE visual
+4. Guide attention with ANIMATION TIMING
+5. Build complexity GRADUALLY
+6. End with satisfying RESOLUTION
 
 Return ONLY Python code. No markdown, no explanations.'''
         
         # Extract first line of viz_hint for the required visual type
         viz_type = viz_hint.split('\n')[0].split(':')[0].strip() if '\n' in viz_hint else viz_hint.split(':')[0].strip()
         
-        user_prompt = f'''Create a CINEMATIC, GRAPHICALLY RICH animation for this research concept.
+        user_prompt = f'''Create a 3BLUE1BROWN-STYLE visual explanation for this concept.
 
 Topic: {segment.get('topic', 'Research Concept')}
 Category: {topic_category}
@@ -488,16 +494,50 @@ Key Concepts: {', '.join(segment.get('key_concepts', []))}
 Context (use to INSPIRE your visuals, do NOT display as text):
 {segment.get('content', '')[:600]}
 
-=== YOUR MISSION ===
-Create a {viz_type} with these REQUIREMENTS:
-1. At least 5-8 animated SHAPES (circles, boxes, arrows, lines, stars)
-2. MOTION: Objects should move, scale, pulse, or transform
-3. COLOR TRANSITIONS: Use .animate.set_color() for emphasis
-4. LAYERED COMPOSITION: Background elements + foreground action
-5. SHORT labels only (1-3 words max per label)
-6. SMOOTH FLOW: Each element leads to the next
+=== 3BLUE1BROWN APPROACH ===
+Imagine you're explaining this to someone who learns VISUALLY:
 
-=== STRUCTURE ===
+1. **VISUAL METAPHOR**: What real-world object or phenomenon represents this concept?
+   - Atoms? Show orbiting electrons, pulsing nuclei
+   - Data flow? Show particles streaming along paths
+   - Comparison? Show morphing shapes, side-by-side with transformations
+   - Networks? Show nodes with signals propagating through connections
+   - Growth? Show expanding circles, building blocks stacking
+
+2. **ANIMATED EXPLANATION**: Show the concept IN ACTION
+   - If two things combine: animate them MERGING
+   - If something transforms: show the MORPHING step-by-step
+   - If there's cause-effect: show RIPPLES or DOMINO effects
+   - If there's a process: show DATA FLOWING through stages
+
+3. **BUILD UNDERSTANDING GRADUALLY**:
+   - Start simple (one shape)
+   - Add complexity piece by piece
+   - Highlight key moments with PULSE or GLOW effects
+   - End with the complete picture
+
+=== SPECIFIC VISUAL REQUIREMENTS ===
+For "{topic_category}":
+{viz_hint}
+
+=== TECHNICAL REQUIREMENTS ===
+1. 8-12 animated objects minimum
+2. Use transforms, particles, or physics-like motion
+3. Colors should convey meaning (blue=input, green=process, red=output)
+4. Motion should guide understanding
+5. Build complexity gradually - don't show everything at once
+
+=== SCENE STRUCTURE ===
+1. Simple title appears
+2. Core visual metaphor introduces itself
+3. Animation plays out showing the concept in action
+4. Key insight highlighted with emphasis effect
+5. Satisfying conclusion/resolution
+6. Fadeout and Xe-Bot branding
+
+Make it BEAUTIFUL and ENLIGHTENING - viewers should UNDERSTAND through WATCHING!
+
+Generate the Manim code:'''
 1. Title appears (with subtle decoration)
 2. Main visual builds piece by piece
 3. Key elements PULSE or GLOW for emphasis
@@ -591,11 +631,14 @@ Generate the Manim code:'''
             for i, s in enumerate(segments[:5])  # Limit to 5 segments
         ])
         
-        system_prompt = f'''You are an expert Manim animator creating CINEMATIC, GRAPHICALLY RICH animations.
+        system_prompt = f'''You are a 3Blue1Brown-style animator creating STUNNING VISUAL EXPLANATIONS.
 
-=== CORE PHILOSOPHY ===
-Create MOTION GRAPHICS like a professional video! Use shapes, colors, animations!
-Each segment needs VISUAL IMPACT. Viewers should be IMPRESSED and UNDERSTAND.
+=== 3BLUE1BROWN PHILOSOPHY ===
+Every abstract concept becomes a VISUAL EXPERIENCE:
+- Show, don't tell - viewers UNDERSTAND through WATCHING
+- Use VISUAL METAPHORS (atoms as orbiting particles, data as flowing streams)
+- Build complexity GRADUALLY - start simple, add layers
+- MOTION conveys MEANING (merging = combining, expanding = growing, flowing = transferring)
 
 === CRITICAL: PREVENT TEXT OVERLAP ===
 Before EVERY new segment:
@@ -603,124 +646,127 @@ Before EVERY new segment:
 
 This is MANDATORY to clear the screen between sections.
 
-=== GRAPHICAL TECHNIQUES TO USE ===
-1. PARTICLE EFFECTS: Background dots that float/pulse
-2. ANIMATED CONNECTIONS: Arrows that grow, dots that flow along paths
-3. PULSING EMPHASIS: shape.animate.scale(1.2) then back to 1
-4. COLOR TRANSITIONS: shape.animate.set_color(NEW_COLOR)
-5. STAGGERED REVEALS: Elements appear one by one with delays
-6. LAYERED COMPOSITION: Background decorations + main content
+=== 3BLUE1BROWN VISUAL TECHNIQUES ===
 
-=== STRUCTURE ===
-1. TITLE SLIDE: Paper title with animated decorative lines
-2. Each segment gets:
-   - Segment title (2 words max) with underline animation
-   - ONE rich diagram visualization (minimum 5 shapes)
-   - Motion/pulse effects on key elements
-   - Clear screen before next
-3. BRANDING: Animated "Animation by Xe-Bot"
+**PARTICLE SYSTEMS (for data, energy, information):**
+# Particles flowing through a system
+particles = VGroup(*[Dot(color=BLUE, fill_opacity=0.6).scale(0.4) for _ in range(20)])
+for i, p in enumerate(particles):
+    p.move_to(LEFT*4 + UP*(i*0.3 - 2))
+# Animate flow
+self.play(*[p.animate.shift(RIGHT*6) for p in particles], run_time=2)
 
-=== VISUALIZATION TYPES ===
-- background -> Floating particles + context nodes
-- problem_statement -> Visual breakdown with RED X marks, cracks
-- approach -> Pipeline with ANIMATED data flow (moving dots)
-- contributions -> Trophy/star icons with glow effects
-- For ML/AI -> Neural network with signal propagation animation
+**MORPHING TRANSFORMATIONS (for change, evolution):**
+# Shape A transforms into Shape B
+circle = Circle(color=BLUE, fill_opacity=0.6)
+square = Square(color=RED, fill_opacity=0.6)
+self.play(Transform(circle, square), run_time=2)
+
+**ORBITAL MOTION (for atomic/system concepts):**
+# Electron orbiting nucleus
+nucleus = Circle(radius=0.3, color=RED, fill_opacity=1)
+electron = Dot(color=BLUE).move_to(RIGHT*1.5)
+orbit = Circle(radius=1.5, color=WHITE, stroke_opacity=0.3)
+self.play(Rotate(electron, about_point=ORIGIN, angle=2*PI), run_time=3)
+
+**WAVE PROPAGATION (for signals, communication):**
+# Ripple effect from center
+for i in range(3):
+    ring = Circle(radius=0.5+i, color=BLUE, fill_opacity=0, stroke_opacity=1-i*0.3)
+    self.play(Create(ring), run_time=0.5)
+
+**MERGING/FUSION (when things combine):**
+obj1 = Circle(radius=0.5, color=BLUE, fill_opacity=0.7).shift(LEFT*2)
+obj2 = Circle(radius=0.5, color=RED, fill_opacity=0.7).shift(RIGHT*2)
+self.play(obj1.animate.shift(RIGHT*2), obj2.animate.shift(LEFT*2), run_time=1.5)
+merged = Circle(radius=0.8, color=PURPLE, fill_opacity=1)
+self.play(Transform(obj1, merged), FadeOut(obj2), Flash(ORIGIN))
+
+**NEURAL SIGNAL PROPAGATION:**
+# Create layers
+layers = []
+for x_pos, count, color in [(-3, 4, BLUE), (0, 5, GREEN), (3, 3, RED)]:
+    layer = VGroup(*[Circle(radius=0.2, color=color, fill_opacity=0.7).shift(UP*(i-count/2)*0.6) for i in range(count)])
+    layer.shift(RIGHT*x_pos)
+    layers.append(layer)
+
+# Animate signal passing through
+signal = Dot(color=YELLOW, radius=0.1)
+for i, layer in enumerate(layers):
+    for node in layer:
+        signal.move_to(node)
+        self.play(node.animate.scale(1.3).set_color(YELLOW), run_time=0.1)
+        self.play(node.animate.scale(1/1.3).set_color(layer[0].get_color()), run_time=0.1)
+
+**FIELD/GRADIENT VISUALIZATION:**
+# Arrow field showing force/direction
+arrows = VGroup()
+for x in range(-4, 5, 2):
+    for y in range(-2, 3, 1):
+        arr = Arrow(ORIGIN, UP*0.4, buff=0, stroke_width=2, color=BLUE)
+        arr.move_to([x, y, 0])
+        arrows.add(arr)
+self.play(Create(arrows), run_time=1)
+
+=== VISUALIZATION TYPES BY CATEGORY ===
+- background -> Floating context particles + interconnected concept nodes
+- problem_statement -> VISUAL breakdown (cracks appearing, RED X marks, broken chains)
+- motivation -> RIPPLE effects showing impact, domino animations
+- approach -> PIPELINE with glowing data packets flowing through
+- contributions -> STAR icons revealing with glow, achievement badges appearing
+- For ML/AI -> NEURAL NETWORK with animated signal propagation
 
 === REQUIREMENTS ===
-1. from manim import *
+1. from manim import * and import numpy as np
 2. Single Scene class
 3. ONLY Text() - NO MathTex, Tex, LaTeX
 4. ASCII only
-5. Duration: 45-90 seconds total
-6. MINIMUM 5 shapes per segment (not counting text)
-7. At least ONE motion effect per segment (scale, shift, color change)
+5. Duration: 60-120 seconds total
+6. MINIMUM 8 shapes per segment (not counting text)
+7. Each segment MUST have MOTION (particles, transforms, pulses)
+8. Colors convey meaning: BLUE=input/start, GREEN=process, RED=output/end, YELLOW=highlight
 
 === ORDER OF OPERATIONS (EVERY SEGMENT) ===
 1. FadeOut all existing: self.play(*[FadeOut(m) for m in self.mobjects])
-2. Create segment title with decoration
-3. Create shapes (circles, boxes, stars, lines)
-4. Position shapes with .shift()
-5. Add MOTION (pulsing, color change, movement)
-6. Create labels AFTER positioning
-7. Create arrows with GrowArrow
-8. Wait 2-3 seconds
-9. FadeOut before next segment
+2. Create segment title (2-3 words max)
+3. Build visual metaphor piece by piece
+4. Add MOTION and ANIMATION
+5. Highlight key insight with pulse/glow
+6. Wait 2-3 seconds
+7. FadeOut before next segment
 
-=== LAYOUT ===
-- Title: .to_edge(UP, buff=0.5), font_size=36
-- Shapes: varied sizes for visual interest
-- Positions: LEFT*3, ORIGIN, RIGHT*3
-- Labels: font_size=18-20, 1-3 words only
-- Frame: x=-7 to 7, y=-4 to 4
-
-=== ADVANCED EXAMPLE ===
-# Background particle effect
-particles = VGroup()
-for _ in range(15):
-    p = Dot(radius=0.05, color=BLUE, fill_opacity=0.3)
-    p.move_to([np.random.uniform(-6, 6), np.random.uniform(-3, 3), 0])
-    particles.add(p)
-self.add(particles)
-self.play(*[p.animate.shift(UP*0.3) for p in particles], run_time=2)
-
-# Pulsing node emphasis
-node = Circle(radius=0.5, color=GREEN, fill_opacity=0.8)
-self.play(node.animate.scale(1.3), run_time=0.3)
-self.play(node.animate.scale(1/1.3), run_time=0.3)
-
-# Animated data flow
-path = Line(LEFT*3, RIGHT*3)
-dot = Dot(color=YELLOW).move_to(path.get_start())
-self.play(MoveAlongPath(dot, path), run_time=2)
-layers = []
-for i, (size, color) in enumerate([(3, RED), (4, BLUE), (2, GREEN)]):
-    layer = VGroup()
-    for j in range(size):
-        node = Circle(radius=0.2, color=color, fill_opacity=0.6)
-        node.move_to([i*3 - 3, j*0.8 - size*0.4, 0])
-        layer.add(node)
-    layers.append(layer)
-    self.play(*[GrowFromCenter(n) for n in layer])
-
-=== EXAMPLE STRUCTURE ===
+=== EXAMPLE ===
 from manim import *
+import numpy as np
 
 class PaperAnimation(Scene):
     def construct(self):
-        # Title slide
-        title = Text("Paper Title", font_size=40, color=BLUE)
+        # Title with animated underline
+        title = Text("Research Topic", font_size=42, color=BLUE)
+        underline = Line(LEFT*3, RIGHT*3, color=BLUE).next_to(title, DOWN, buff=0.1)
         self.play(Write(title))
+        self.play(Create(underline))
         self.wait(2)
         self.play(*[FadeOut(m) for m in self.mobjects])
         
-        # Segment 1: Background (context diagram)
-        seg1_title = Text("Background", font_size=36, color=GREEN)
-        seg1_title.to_edge(UP, buff=0.5)
-        self.play(Write(seg1_title))
+        # Segment: Show concept with particles
+        seg_title = Text("Key Concept", font_size=32, color=GREEN)
+        seg_title.to_edge(UP)
+        self.play(Write(seg_title))
         
-        # Create positioned shapes for diagram
-        box1 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=RED, fill_opacity=0.3)
-        box2 = RoundedRectangle(width=2.5, height=1, corner_radius=0.1, color=GREEN, fill_opacity=0.3)
-        box1.shift(LEFT*3)
-        box2.shift(RIGHT*3)
+        # Visual metaphor: particles converging
+        particles = VGroup(*[Dot(color=BLUE, fill_opacity=0.6).move_to(
+            4*np.array([np.cos(i*PI/5), np.sin(i*PI/5), 0])
+        ) for i in range(10)])
+        self.play(*[FadeIn(p) for p in particles])
+        self.play(*[p.animate.move_to(ORIGIN) for p in particles], run_time=2)
         
-        lbl1 = Text("Concept A", font_size=18)
-        lbl1.move_to(box1)
-        lbl2 = Text("Concept B", font_size=18)
-        lbl2.move_to(box2)
-        
-        arrow = Arrow(box1.get_right(), box2.get_left(), buff=0.1, color=WHITE)
-        
-        self.play(Create(box1), Write(lbl1))
-        self.play(GrowArrow(arrow))
-        self.play(Create(box2), Write(lbl2))
+        # Merge into unified concept
+        result = Circle(radius=0.8, color=YELLOW, fill_opacity=1)
+        self.play(*[Transform(particles[0], result)] + [FadeOut(p) for p in particles[1:]], Flash(ORIGIN))
         self.wait(2)
         
-        # CLEAR before next segment
         self.play(*[FadeOut(m) for m in self.mobjects])
-        
-        # ... more segments ...
         
         # Branding
         brand = Text("Animation by Xe-Bot", font_size=40, color=BLUE)

@@ -700,6 +700,47 @@ Generate the Manim code:'''
         code = code.replace('\\alpha', 'alpha')
         code = code.replace('\\beta', 'beta')
         code = code.replace('\\gamma', 'gamma')
+        code = code.replace('\\theta', 'theta')
+        code = code.replace('\\delta', 'delta')
+        code = code.replace('\\pi', 'pi')
+        code = code.replace('\\infty', 'infinity')
+        code = code.replace('\\rightarrow', '->')
+        code = code.replace('\\leftarrow', '<-')
+        code = code.replace('\\times', 'x')
+        code = code.replace('\\cdot', '*')
+        
+        # Fix common issues that cause Manim to crash
+        # 1. Remove empty list animations
+        code = re.sub(r'self\.play\(\*\[\s*\]\)', '# Empty animation removed', code)
+        
+        # 2. Fix zero or negative run_time
+        code = re.sub(r'run_time\s*=\s*0([,\)])', r'run_time=0.3\1', code)
+        code = re.sub(r'run_time\s*=\s*-\d+', 'run_time=0.5', code)
+        
+        # 3. Fix problematic scale values
+        code = re.sub(r'\.scale\(\s*0\s*\)', '.scale(0.01)', code)
+        code = re.sub(r'\.scale\(\s*-', '.scale(0.5', code)
+        
+        # 4. Fix common typos in Manim methods
+        code = re.sub(r'\bFadeout\b', 'FadeOut', code)
+        code = re.sub(r'\bFadein\b', 'FadeIn', code)
+        code = re.sub(r'\bGrowarrow\b', 'GrowArrow', code)
+        
+        # 5. Replace unicode characters that cause issues
+        code = code.replace('→', '->')
+        code = code.replace('←', '<-')
+        code = code.replace('•', '-')
+        code = code.replace('…', '...')
+        code = code.replace('"', '"').replace('"', '"')
+        code = code.replace(''', "'").replace(''', "'")
+        
+        # 6. Ensure construct method doesn't have syntax errors
+        # Fix missing colons after def construct(self)
+        code = re.sub(r'def construct\(self\)\s*\n', 'def construct(self):\n', code)
+        
+        # 7. Fix potential issues with string literals in Text()
+        # Remove any multiline strings in Text() calls
+        code = re.sub(r'Text\(["\']([^"\']{100,})["\']', lambda m: f'Text("{m.group(1)[:50]}..."', code)
         
         return code.strip()
     

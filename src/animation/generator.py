@@ -177,6 +177,50 @@ class ManimAnimationGenerator:
         code = code.replace('≥', '>=')
         code = code.replace('"', '"').replace('"', '"')  # Smart quotes
         code = code.replace(''', "'").replace(''', "'")  # Smart apostrophes
+        code = code.replace('…', '...')  # Ellipsis
+        code = code.replace('–', '-').replace('—', '-')  # Dashes
+        
+        # Fix common Manim errors
+        # 1. Fix empty VGroup animations
+        code = re.sub(r'self\.play\(\*\[\s*\]\)', '# Empty animation removed', code)
+        
+        # 2. Fix FadeIn/FadeOut with empty lists
+        code = re.sub(r'self\.play\(\*\[FadeOut\(m\) for m in \[\]\]\)', '# Empty FadeOut removed', code)
+        code = re.sub(r'self\.play\(\*\[FadeIn\(m\) for m in \[\]\]\)', '# Empty FadeIn removed', code)
+        
+        # 3. Ensure run_time is positive
+        code = re.sub(r'run_time\s*=\s*0([,\)])', r'run_time=0.1\1', code)
+        code = re.sub(r'run_time\s*=\s*-', 'run_time=0.5', code)
+        
+        # 4. Fix scale(0) which causes issues
+        code = re.sub(r'\.scale\(0\)', '.scale(0.01)', code)
+        
+        # 5. Fix common typos
+        code = re.sub(r'Fadeout', 'FadeOut', code)
+        code = re.sub(r'Fadein', 'FadeIn', code)
+        code = re.sub(r'fadeout', 'FadeOut', code)
+        code = re.sub(r'fadein', 'FadeIn', code)
+        
+        # 6. Ensure proper color constants (fix common issues)
+        code = re.sub(r'\bWHITE\s*=', 'WHITE_VAR =', code)  # Don't override constants
+        code = re.sub(r'\bBLUE\s*=', 'BLUE_VAR =', code)
+        code = re.sub(r'\bRED\s*=', 'RED_VAR =', code)
+        
+        # 7. Fix multiple inheritance issues
+        code = re.sub(r'class\s+(\w+)\s*\(\s*Scene\s*,\s*Scene\s*\)', r'class \1(Scene)', code)
+        
+        # 8. Fix missing self in method calls inside construct
+        # This is tricky, so we only fix obvious cases
+        
+        # 9. Ensure there's a wait at the end before fadeout to prevent abrupt endings
+        if 'self.play(*[FadeOut(m) for m in self.mobjects])' in code:
+            code = code.replace(
+                'self.play(*[FadeOut(m) for m in self.mobjects])',
+                'self.wait(0.5)\n        self.play(*[FadeOut(m) for m in self.mobjects])'
+            )
+        
+        # 10. Fix potential division by zero in loops
+        code = re.sub(r'/\s*0([^\d.])', r'/1\1', code)
         
         # Check if there's a Scene class
         if "class" not in code or "Scene" not in code:
@@ -379,30 +423,85 @@ class GeneratedScene(Scene):
                 pass
     
     def _render_fallback_animation(self, scene_name: str, media_dir: Path) -> Optional[Path]:
-        """Render a simple fallback animation when main generation fails"""
+        """Render a visually rich fallback animation when main generation fails"""
+        # Create a clean topic name from scene_name
+        topic_name = scene_name.replace('_', ' ').replace('Scene', '').strip()
+        if not topic_name:
+            topic_name = "Research Concept"
+        
         fallback_code = f'''from manim import *
+import numpy as np
 
 class {scene_name}(Scene):
     def construct(self):
-        # Simple fallback animation
-        title = Text("{scene_name.replace('_', ' ')}", font_size=40, color=BLUE)
-        title.to_edge(UP)
+        # Title with decorative underline
+        title = Text("{topic_name}", font_size=38, color=BLUE)
+        title.to_edge(UP, buff=0.5)
+        underline = Line(LEFT*3, RIGHT*3, color=BLUE, stroke_width=2)
+        underline.next_to(title, DOWN, buff=0.1)
         
-        box = Rectangle(width=8, height=4, color=WHITE, fill_opacity=0.1)
+        self.play(Write(title), run_time=1)
+        self.play(Create(underline), run_time=0.5)
         
-        content = Text("Animation content\\ngeneration in progress...", font_size=28)
-        content.move_to(box)
+        # Create animated particle system (visual flair)
+        particles = VGroup()
+        for i in range(12):
+            angle = i * PI / 6
+            p = Dot(color=BLUE, fill_opacity=0.6).scale(0.5)
+            p.move_to(2.5 * np.array([np.cos(angle), np.sin(angle), 0]))
+            particles.add(p)
         
-        self.play(Write(title))
-        self.play(Create(box), FadeIn(content))
-        self.wait(2)
-        self.play(FadeOut(title), FadeOut(box), FadeOut(content))
+        particles.shift(DOWN * 0.5)
+        self.play(*[FadeIn(p, scale=0.5) for p in particles], run_time=0.8)
         
-        # Branding
+        # Animate particles converging to center
+        center_dot = Circle(radius=0.8, color=YELLOW, fill_opacity=0.3, stroke_width=3)
+        center_dot.shift(DOWN * 0.5)
+        
+        self.play(
+            *[p.animate.move_to(DOWN * 0.5) for p in particles],
+            GrowFromCenter(center_dot),
+            run_time=1.5
+        )
+        
+        # Pulse effect on center
+        self.play(center_dot.animate.scale(1.3), run_time=0.3)
+        self.play(center_dot.animate.scale(1/1.3), run_time=0.3)
+        
+        # Add concept label
+        concept_label = Text("Concept Visualization", font_size=24, color=WHITE)
+        concept_label.next_to(center_dot, DOWN, buff=0.4)
+        self.play(FadeIn(concept_label, shift=UP), run_time=0.5)
+        
+        # Create orbiting elements
+        orbit = Circle(radius=1.8, color=WHITE, stroke_opacity=0.2)
+        orbit.shift(DOWN * 0.5)
+        self.play(Create(orbit), run_time=0.5)
+        
+        # Add orbiting dots
+        orbit_dots = VGroup()
+        for i in range(3):
+            od = Dot(color=[RED, GREEN, PURPLE][i], fill_opacity=0.8).scale(0.7)
+            od.move_to(DOWN * 0.5 + 1.8 * np.array([np.cos(i * 2*PI/3), np.sin(i * 2*PI/3), 0]))
+            orbit_dots.add(od)
+        
+        self.play(*[FadeIn(od) for od in orbit_dots], run_time=0.5)
+        self.play(Rotate(orbit_dots, angle=PI, about_point=DOWN*0.5), run_time=2)
+        
+        self.wait(1)
+        
+        # Fadeout all
+        self.play(*[FadeOut(m) for m in self.mobjects], run_time=0.8)
+        
+        # Branding with animation
         branding = Text("Animation by Xe-Bot", font_size=36, color=BLUE)
-        self.play(FadeIn(branding))
-        self.wait(2)
-        self.play(FadeOut(branding))
+        brand_underline = Line(LEFT*2.5, RIGHT*2.5, color=BLUE)
+        brand_underline.next_to(branding, DOWN, buff=0.1)
+        
+        self.play(FadeIn(branding, shift=UP), run_time=0.5)
+        self.play(Create(brand_underline), run_time=0.3)
+        self.wait(1.5)
+        self.play(FadeOut(branding), FadeOut(brand_underline), run_time=0.5)
 '''
         try:
             temp_dir = Path(tempfile.mkdtemp())

@@ -507,6 +507,28 @@ EVERY section MUST start fresh. Before ANY new content:
 === VISUALIZATION STYLE FOR THIS SEGMENT ===
 {viz_hint}
 
+=== TEXT GUIDELINES FOR CLARITY ===
+Add MINIMAL text to enhance understanding:
+
+1. **TITLE** (required): 2-4 words, font_size=36, at top
+   title = Text("Core Concept", font_size=36, color=BLUE).to_edge(UP)
+
+2. **LABELS** (2-3 max): 1-2 words each, font_size=18-20, attached to shapes
+   label = Text("Input", font_size=18, color=WHITE)
+   label.next_to(shape, DOWN, buff=0.2)
+
+3. **INSIGHT TEXT** (optional): Brief "aha" moment, font_size=24
+   insight = Text("Key: A leads to B", font_size=24, color=YELLOW)
+   insight.to_edge(DOWN, buff=0.5)
+   self.play(FadeIn(insight, shift=UP))
+
+TEXT PLACEMENT RULES:
+- Title: .to_edge(UP, buff=0.5)
+- Shape labels: .next_to(shape, DOWN/UP, buff=0.2) or .move_to(shape) if inside
+- Insight/summary: .to_edge(DOWN, buff=0.5)
+- Never put text IN the animation area (center of screen)
+- Text should SUPPORT visuals, not replace them
+
 === ABSOLUTE REQUIREMENTS ===
 1. Use ONLY: from manim import *
 2. import numpy as np (for math operations)
@@ -518,12 +540,13 @@ EVERY section MUST start fresh. Before ANY new content:
 8. Use at least 4 different colors
 9. Include motion effects (particles, transforms, rotations)
 10. ALWAYS clear with FadeOut before new sections
+11. Include 1 title + 2-3 labels for clarity
 
 === GOLDEN RULES ===
-1. SHOW concepts through MOTION, not text
+1. SHOW concepts through MOTION, supported by minimal text
 2. Use METAPHORS viewers can understand visually
 3. Every abstract concept needs a CONCRETE visual
-4. Guide attention with ANIMATION TIMING
+4. Labels identify WHAT things are, animation shows HOW they work
 5. Build complexity GRADUALLY
 6. End with satisfying RESOLUTION
 
@@ -608,15 +631,28 @@ IF the concept is about LEARNING/TRAINING:
 4. Build complexity gradually - start simple
 5. Have a clear "AHA moment" where the insight becomes visible
 
+=== TEXT FOR CLARITY ===
+Add minimal text to help viewers understand:
+
+1. **TITLE** (required): Short topic name at top
+   - Example: Text("Data Flow", font_size=36, color=BLUE).to_edge(UP)
+
+2. **LABELS** (2-4 labels): Identify key elements
+   - Example: Text("Input", font_size=18).next_to(input_box, DOWN, buff=0.2)
+   - Keep labels SHORT: 1-2 words max
+
+3. **INSIGHT** (optional): One-line takeaway at bottom
+   - Example: Text("Result: Faster Processing", font_size=24, color=YELLOW).to_edge(DOWN)
+
 === STRUCTURE ===
-1. Brief title (2-4 words)
-2. Visual metaphor appears and animates
+1. Title appears at top (2-4 words)
+2. Visual elements appear with small labels
 3. Core concept demonstrated through motion
-4. Insight moment (pulse, glow, transformation)
+4. Insight text appears at key moment (optional)
 5. Resolution (complete picture)
 6. Fadeout + Xe-Bot branding
 
-The viewer should UNDERSTAND the concept just by WATCHING - no reading required!
+The viewer should UNDERSTAND the concept through WATCHING + minimal text labels!
 
 Generate the Manim code:'''
         
@@ -807,6 +843,25 @@ self.play(Create(arrows), run_time=1)
 - contributions -> STAR icons revealing with glow, achievement badges appearing
 - For ML/AI -> NEURAL NETWORK with animated signal propagation
 
+=== TEXT FOR CLARITY ===
+Add MINIMAL text to support visual understanding:
+
+1. **SEGMENT TITLE** (required): 2-4 words at top of each segment
+   seg_title = Text("Key Concept", font_size=32, color=GREEN).to_edge(UP)
+
+2. **ELEMENT LABELS** (2-4 per segment): Identify key shapes
+   label = Text("Input", font_size=18).next_to(shape, DOWN, buff=0.2)
+   
+3. **INSIGHT TEXT** (1 per segment): Key takeaway at bottom
+   insight = Text("Result: Better Performance", font_size=22, color=YELLOW).to_edge(DOWN)
+
+TEXT RULES:
+- Labels: 1-2 words max, font_size=16-20
+- Titles: 2-4 words, font_size=28-36
+- Insights: Short phrase, font_size=20-24
+- Never clutter the animation area
+- Text SUPPORTS visuals, doesn't replace them
+
 === REQUIREMENTS ===
 1. from manim import * and import numpy as np
 2. Single Scene class
@@ -816,13 +871,14 @@ self.play(Create(arrows), run_time=1)
 6. MINIMUM 8 shapes per segment (not counting text)
 7. Each segment MUST have MOTION (particles, transforms, pulses)
 8. Colors convey meaning: BLUE=input/start, GREEN=process, RED=output/end, YELLOW=highlight
+9. Each segment needs: title + 2-4 labels + optional insight
 
 === ORDER OF OPERATIONS (EVERY SEGMENT) ===
 1. FadeOut all existing: self.play(*[FadeOut(m) for m in self.mobjects])
-2. Create segment title (2-3 words max)
-3. Build visual metaphor piece by piece
+2. Create segment title at top (2-4 words)
+3. Build visual metaphor with labeled elements
 4. Add MOTION and ANIMATION
-5. Highlight key insight with pulse/glow
+5. Show insight text at key moment
 6. Wait 2-3 seconds
 7. FadeOut before next segment
 
@@ -840,8 +896,31 @@ class PaperAnimation(Scene):
         self.wait(2)
         self.play(*[FadeOut(m) for m in self.mobjects])
         
-        # Segment: Show concept with particles
-        seg_title = Text("Key Concept", font_size=32, color=GREEN)
+        # Segment: Show concept with labeled elements
+        seg_title = Text("Key Concept", font_size=32, color=GREEN).to_edge(UP)
+        self.play(Write(seg_title))
+        
+        # Create shapes with labels
+        input_box = Circle(radius=0.5, color=BLUE, fill_opacity=0.6).shift(LEFT*3)
+        input_label = Text("Input", font_size=18).next_to(input_box, DOWN, buff=0.2)
+        
+        output_box = Circle(radius=0.5, color=RED, fill_opacity=0.6).shift(RIGHT*3)
+        output_label = Text("Output", font_size=18).next_to(output_box, DOWN, buff=0.2)
+        
+        self.play(Create(input_box), Write(input_label))
+        
+        # Animate the concept
+        arrow = Arrow(input_box.get_right(), output_box.get_left(), color=WHITE)
+        self.play(GrowArrow(arrow))
+        self.play(Create(output_box), Write(output_label))
+        
+        # Insight text
+        insight = Text("Data transforms through processing", font_size=22, color=YELLOW)
+        insight.to_edge(DOWN, buff=0.5)
+        self.play(FadeIn(insight, shift=UP))
+        
+        self.wait(2)
+        self.play(*[FadeOut(m) for m in self.mobjects])
         seg_title.to_edge(UP)
         self.play(Write(seg_title))
         
